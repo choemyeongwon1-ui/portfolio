@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>최명원 포트폴리오 🌿</title>
+  <meta name="description" content="그린스마트시티학과 최명원의 포트폴리오입니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Gaegu:wght@300;400;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 햇빛 + 나무 그림자 배경 -->
+  <div class="tree-shadow-bg" aria-hidden="true">
+
+    <!-- 햇빛 패치 (밝은 얼룩들) -->
+    <svg class="shadow-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="leafBlur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>
+        </filter>
+        <filter id="softBlur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
+        </filter>
+        <filter id="tinyBlur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+        </filter>
+      </defs>
+
+      <!-- 큰 햇빛 영역 (오른쪽 상단) -->
+      <ellipse cx="1050" cy="180" rx="340" ry="260" fill="rgba(255,242,166,0.28)" filter="url(#softBlur)"/>
+      <ellipse cx="1200" cy="80"  rx="200" ry="150" fill="rgba(255,248,200,0.22)" filter="url(#softBlur)"/>
+
+      <!-- 왼쪽 산란광 -->
+      <ellipse cx="120"  cy="400" rx="180" ry="220" fill="rgba(255,242,166,0.15)" filter="url(#softBlur)"/>
+
+      <!-- 나뭇잎 그림자들 (작은 얼룩) -->
+      <ellipse cx="820" cy="120" rx="55" ry="38" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(-20,820,120)"/>
+      <ellipse cx="870" cy="80"  rx="40" ry="28" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(15,870,80)"/>
+      <ellipse cx="920" cy="150" rx="60" ry="35" fill="rgba(90,120,70,0.10)" filter="url(#leafBlur)" transform="rotate(-35,920,150)"/>
+      <ellipse cx="780" cy="200" rx="45" ry="30" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(25,780,200)"/>
+      <ellipse cx="960" cy="200" rx="50" ry="32" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(-10,960,200)"/>
+      <ellipse cx="1000" cy="130" rx="38" ry="26" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(40,1000,130)"/>
+      <ellipse cx="850" cy="260" rx="52" ry="33" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(-28,850,260)"/>
+      <ellipse cx="1040" cy="280" rx="44" ry="28" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(18,1040,280)"/>
+      <ellipse cx="730" cy="150" rx="36" ry="24" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-42,730,150)"/>
+      <ellipse cx="910" cy="320" rx="48" ry="30" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(12,910,320)"/>
+      <ellipse cx="1080" cy="360" rx="42" ry="27" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-22,1080,360)"/>
+      <ellipse cx="760" cy="310" rx="50" ry="34" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(32,760,310)"/>
+      <ellipse cx="600" cy="180" rx="40" ry="26" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(-15,600,180)"/>
+      <ellipse cx="540" cy="240" rx="34" ry="22" fill="rgba(90,120,70,0.05)" filter="url(#leafBlur)" transform="rotate(28,540,240)"/>
+      <ellipse cx="660" cy="280" rx="38" ry="24" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(-38,660,280)"/>
+      <ellipse cx="180" cy="200" rx="44" ry="30" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(20,180,200)"/>
+      <ellipse cx="220" cy="300" rx="50" ry="32" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(-30,220,300)"/>
+      <ellipse cx="140" cy="350" rx="36" ry="24" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(45,140,350)"/>
+      <ellipse cx="300" cy="250" rx="42" ry="28" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-18,300,250)"/>
+
+      <!-- 가지 그림자 -->
+      <path d="M680,0 Q820,80 900,60 Q980,40 1080,90 Q1160,130 1200,200" stroke="rgba(70,100,55,0.07)" stroke-width="14" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
+      <path d="M900,60 Q960,20 1020,10" stroke="rgba(70,100,55,0.06)" stroke-width="10" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
+      <path d="M820,80 Q840,30 880,20" stroke="rgba(70,100,55,0.06)" stroke-width="8" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
+      <path d="M0,300 Q80,220 160,260 Q220,200 280,230" stroke="rgba(70,100,55,0.06)" stroke-width="12" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
+      <path d="M160,260 Q130,180 150,120" stroke="rgba(70,100,55,0.05)" stroke-width="8" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
+    </svg>
+
+    <!-- 왼쪽 나뭇가지 실루엣 -->
+    <svg class="branch-left" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+      <path d="M-20,500 Q30,380 60,280 Q90,180 80,100 Q70,40 120,0" stroke="rgba(80,110,60,0.18)" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M65,260 Q120,200 180,190 Q240,180 290,150" stroke="rgba(80,110,60,0.13)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M70,180 Q130,140 170,100 Q200,70 240,50" stroke="rgba(80,110,60,0.11)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M180,190 Q200,140 210,110" stroke="rgba(80,110,60,0.10)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M240,160 Q270,120 280,90" stroke="rgba(80,110,60,0.09)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M290,150 Q320,110 340,80" stroke="rgba(80,110,60,0.08)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="300" cy="140" rx="32" ry="22" fill="rgba(80,110,60,0.10)" transform="rotate(-20,300,140)"/>
+      <ellipse cx="250" cy="45"  rx="28" ry="20" fill="rgba(80,110,60,0.09)" transform="rotate(15,250,45)"/>
+      <ellipse cx="210" cy="100" rx="24" ry="16" fill="rgba(80,110,60,0.08)" transform="rotate(-30,210,100)"/>
+      <ellipse cx="350" cy="75"  rx="26" ry="18" fill="rgba(80,110,60,0.08)" transform="rotate(25,350,75)"/>
+      <ellipse cx="280" cy="85"  rx="20" ry="14" fill="rgba(80,110,60,0.07)" transform="rotate(-10,280,85)"/>
+    </svg>
+
+    <!-- 오른쪽 나뭇가지 실루엣 -->
+    <svg class="branch-right" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+      <path d="M420,500 Q370,380 340,280 Q310,180 320,100 Q330,40 280,0" stroke="rgba(80,110,60,0.15)" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M335,260 Q280,200 220,185 Q160,170 110,145" stroke="rgba(80,110,60,0.11)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M330,175 Q270,135 230,95 Q200,65 160,45" stroke="rgba(80,110,60,0.09)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M220,185 Q200,135 190,105" stroke="rgba(80,110,60,0.08)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M160,155 Q130,115 120,85" stroke="rgba(80,110,60,0.07)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="110" cy="135" rx="30" ry="20" fill="rgba(80,110,60,0.09)" transform="rotate(20,110,135)"/>
+      <ellipse cx="165" cy="40"  rx="26" ry="18" fill="rgba(80,110,60,0.08)" transform="rotate(-15,165,40)"/>
+      <ellipse cx="190" cy="100" rx="22" ry="15" fill="rgba(80,110,60,0.07)" transform="rotate(30,190,100)"/>
+    </svg>
+  </div>
+
+  <!-- 네비게이션 -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">MW 🌿</div>
+    <ul class="nav-links">
+      <li><a href="#hero"     class="nav-link">홈</a></li>
+      <li><a href="#about"    class="nav-link">소개</a></li>
+      <li><a href="#skills"   class="nav-link">기술</a></li>
+      <li><a href="#projects" class="nav-link">프로젝트</a></li>
+      <li><a href="#contact"  class="nav-link">연락처</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- 히어로 섹션 -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-tag">그린스마트시티학과 🌱</div>
+      <h1 class="hero-title">
+        안녕하세요!<br />
+        저는 <em>최명원</em>이에요 🌿
+      </h1>
+      <p class="hero-desc">
+        더 푸르고 스마트한 도시를 꿈꾸는 학생이에요.<br />
+        자연과 기술이 함께하는 도시를 만들고 싶어요 🌳
+      </p>
+      <div class="hero-btns">
+        <a href="#about"   class="btn btn-solid"   id="heroAboutBtn">저를 알아보세요</a>
+        <a href="#contact" class="btn btn-ghost"   id="heroContactBtn">연락해요 ✉️</a>
+      </div>
+    </div>
+
+    <div class="hero-card-wrap">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <div class="avatar">
+            <span>최명원</span>
+          </div>
+          <div class="avatar-deco">🌿</div>
+        </div>
+        <div class="card-divider"></div>
+        <ul class="card-info-list">
+          <li><span class="ci-icon">🎓</span><div><small>학번</small><strong>202421390</strong></div></li>
+          <li><span class="ci-icon">🌱</span><div><small>학과</small><strong>그린스마트시티학과</strong></div></li>
+          <li><span class="ci-icon">🎂</span><div><small>생년월일</small><strong>2004년 3월 14일</strong></div></li>
+        </ul>
+      </div>
+      <!-- 카드 주변 장식 -->
+      <div class="deco-leaf deco-1">🍃</div>
+      <div class="deco-leaf deco-2">🌿</div>
+      <div class="deco-leaf deco-3">🌱</div>
+    </div>
+  </section>
+
+  <!-- 소개 섹션 -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="sec-label">✦ 저는요 ✦</span>
+        <h2 class="sec-title">나는 이런 사람이에요</h2>
+      </div>
+      <div class="about-grid">
+        <div class="acard" id="aboutCard1">
+          <span class="acard-emoji">🎯</span>
+          <h3>꿈꾸는 것</h3>
+          <p>스마트시티 기술로 사람과 자연이 함께 숨쉬는 도시를 만들고 싶어요. 거창한 게 아니라, 그냥 살기 좋은 동네요!</p>
+        </div>
+        <div class="acard" id="aboutCard2">
+          <span class="acard-emoji">🔍</span>
+          <h3>관심 있는 것</h3>
+          <p>도시계획, 스마트 인프라, GIS, 친환경 건축... 도시가 어떻게 돌아가는지 궁금한 게 참 많아요.</p>
+        </div>
+        <div class="acard" id="aboutCard3">
+          <span class="acard-emoji">🌱</span>
+          <h3>믿는 것</h3>
+          <p>기술은 사람을 위해 있어야 한다고 생각해요. 더 많은 사람이 행복한 도시, 그게 제 방향이에요.</p>
+        </div>
+      </div>
+
+      <div class="info-table">
+        <div class="info-row">
+          <div class="info-item"><label>이름</label><span>최명원</span></div>
+          <div class="info-item"><label>생년월일</label><span>2004. 03. 14</span></div>
+          <div class="info-item"><label>학과</label><span>그린스마트시티학과</span></div>
+          <div class="info-item"><label>학번</label><span>202421390</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 기술 섹션 -->
+  <section class="skills section" id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="sec-label">✦ 배우는 중 ✦</span>
+        <h2 class="sec-title">요즘 이런 걸 공부해요</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-box" id="skillCat1">
+          <h3><span>🏗️</span> 도시 설계</h3>
+          <div class="skill-list">
+            <div class="sk-item">
+              <div class="sk-top"><span>도시계획 이론</span><span>75%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="75"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>GIS 활용</span><span>60%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="60"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>건축 설계 기초</span><span>65%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="65"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="skill-box" id="skillCat2">
+          <h3><span>💻</span> 디지털 기술</h3>
+          <div class="skill-list">
+            <div class="sk-item">
+              <div class="sk-top"><span>데이터 분석</span><span>70%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="70"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>프로그래밍 기초</span><span>55%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="55"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>스마트 인프라</span><span>68%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="68"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="skill-box" id="skillCat3">
+          <h3><span>🌿</span> 친환경 분야</h3>
+          <div class="skill-list">
+            <div class="sk-item">
+              <div class="sk-top"><span>지속가능 개발</span><span>80%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="80"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>에너지 효율화</span><span>62%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="62"></div></div>
+            </div>
+            <div class="sk-item">
+              <div class="sk-top"><span>환경 영향 평가</span><span>58%</span></div>
+              <div class="sk-bar"><div class="sk-fill" data-w="58"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tag-cloud">
+        <span class="tag">스마트시티</span>
+        <span class="tag">IoT</span>
+        <span class="tag">도시계획</span>
+        <span class="tag">친환경</span>
+        <span class="tag">데이터 분석</span>
+        <span class="tag">GIS</span>
+        <span class="tag">지속가능성</span>
+        <span class="tag">그린테크</span>
+        <span class="tag">스마트 모빌리티</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 프로젝트 섹션 -->
+  <section class="projects section" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="sec-label">✦ 해봤어요 ✦</span>
+        <h2 class="sec-title">이런 프로젝트를 했어요</h2>
+      </div>
+      <div class="proj-grid">
+        <div class="proj-card featured" id="projectCard1">
+          <span class="proj-badge">⭐ 주요 프로젝트</span>
+          <span class="proj-emoji">🏙️</span>
+          <h3>스마트시티 설계 연구</h3>
+          <p>수업에서 진행한 미래 도시 설계 프로젝트예요. 지속 가능한 에너지 시스템과 스마트 교통 인프라를 합쳐서 도시 모델을 직접 만들어 봤어요.</p>
+          <div class="proj-tags">
+            <span>도시설계</span><span>GIS</span><span>친환경</span>
+          </div>
+        </div>
+        <div class="proj-card" id="projectCard2">
+          <span class="proj-emoji">🌿</span>
+          <h3>그린 인프라 분석</h3>
+          <p>도시 녹지 공간을 어떻게 배치하면 좋을지 연구했어요. 도심 열섬 현상을 줄이는 방법을 찾아봤답니다.</p>
+          <div class="proj-tags">
+            <span>환경분석</span><span>도시계획</span>
+          </div>
+        </div>
+        <div class="proj-card" id="projectCard3">
+          <span class="proj-emoji">📊</span>
+          <h3>도시 데이터 시각화</h3>
+          <p>공공 데이터로 교통량, 에너지 소비, 인구 분포를 분석하고 시각화해 봤어요.</p>
+          <div class="proj-tags">
+            <span>데이터 분석</span><span>시각화</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 연락처 섹션 -->
+  <section class="contact section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="sec-label">✦ 같이해요 ✦</span>
+        <h2 class="sec-title">같이 이야기해요 ☕</h2>
+      </div>
+      <div class="contact-wrap">
+        <div class="contact-cards">
+          <div class="ct-card" id="contactCard1">
+            <span>🎓</span>
+            <div><small>소속</small><strong>그린스마트시티학과</strong></div>
+          </div>
+          <div class="ct-card" id="contactCard2">
+            <span>🆔</span>
+            <div><small>학번</small><strong>202421390</strong></div>
+          </div>
+          <div class="ct-card" id="contactCard3">
+            <span>👋</span>
+            <div><small>이름</small><strong>최명원</strong></div>
+          </div>
+        </div>
+        <div class="contact-msg">
+          <div class="msg-bubble">
+            <p class="msg-hi">안녕하세요! 👋</p>
+            <p>스마트시티나 친환경 도시 관련해서 이야기 나눠보고 싶은 분 계시면 편하게 연락 주세요. 같이 고민하고 배워가는 거 좋아해요 🌱</p>
+            <div class="msg-footer">
+              <span>🌿</span><span>🌱</span><span>🍃</span><span>🌳</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-name">최명원 🌿</p>
+      <p class="footer-info">그린스마트시티학과 · 202421390</p>
+      <p class="footer-copy">© 2026 · 더 푸른 도시를 꿈꾸며 🌳</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
