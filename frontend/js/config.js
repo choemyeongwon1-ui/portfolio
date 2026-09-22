@@ -10,7 +10,7 @@
 //   render.yaml 의 서비스 이름(portfolio-backend)을 기준으로 만들어지는
 //   기본 주소를 적어 뒀다. Render가 실제로 다른 주소를 배정했다면
 //   (대시보드 맨 위에 표시됨) 이 한 줄만 그 주소로 바꾸면 된다.
-const PRODUCTION_API_BASE = 'https://portfolio-backend.onrender.com/api';
+const PRODUCTION_API_BASE = 'https://portfolio-backend-ehgr.onrender.com/api';
 
 function resolveApiBase() {
   // index.html의 <body data-api-base="..."> 값이 있으면 그걸 최우선으로 쓴다.

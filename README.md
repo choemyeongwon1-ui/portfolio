@@ -140,7 +140,7 @@ portfolio-site/
 
 ```
 portfolio-<...>.vercel.app          ┐
-                                     ├─ fetch('/api/...') ─▶  portfolio-backend.onrender.com
+                                     ├─ fetch('/api/...') ─▶  portfolio-backend-ehgr.onrender.com
 choemyeongwon1-ui.github.io/portfolio/  ┘                     (Render, 항상 켜진 서버)
       화면 (정적 파일, 둘 다 같은 내용)                              데이터 (API)
 ```
@@ -208,7 +208,7 @@ Vercel + Pages → 화면 재배포        Render → API 재배포
 2. 이 GitHub 저장소 선택 → Render가 `render.yaml` 을 읽어 자동으로 설정을 채운다
 3. `ADMIN_PASSWORD_HASH` 칸에 값을 입력하라고 물어본다 — 내 컴퓨터의 `backend/.env` 에서
    `ADMIN_PASSWORD_HASH=` 뒤의 값을 그대로 복사해 붙여넣는다 (비밀번호 원문이 아니라 해시값)
-4. Create — 몇 분 뒤 `https://portfolio-backend.onrender.com` 같은 주소가 생긴다
+4. Create — 몇 분 뒤 `https://portfolio-backend-ehgr.onrender.com` 같은 주소가 생긴다
 
 **Vercel (화면)**
 1. 이미 이 GitHub 저장소에 연결되어 있다면 그대로 둔다 (`vercel.json` 을 자동으로 읽는다)
