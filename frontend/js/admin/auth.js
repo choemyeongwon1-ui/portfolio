@@ -5,7 +5,7 @@
 // 저장되는 것은 서버가 돌려준 토큰뿐이다.
 // ==========================================
 
-import { adminApi, adminToken } from '../api/admin.api.js';
+import { adminApi } from '../api/admin.api.js';
 import { $ } from '../lib/dom.js';
 
 function showLoginError(message) {
@@ -55,23 +55,16 @@ export function initAuth(onSuccess) {
   });
 }
 
-/** 이미 로그인된 상태인지 확인한다. */
-export async function hasValidSession() {
-  if (!adminToken.get()) return false;
-
-  try {
-    await adminApi.checkSession();
-    return true;
-  } catch {
-    adminToken.clear();
-    return false;
-  }
-}
-
 export function showLogin() {
   $('#loginScreen').hidden = false;
   $('#adminScreen').hidden = true;
-  $('#loginPassword')?.focus();
+
+  // 로그인 화면으로 돌아올 때 이전에 친 비밀번호가 남아 있지 않게 한다.
+  const input = $('#loginPassword');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
 }
 
 export function showAdmin() {

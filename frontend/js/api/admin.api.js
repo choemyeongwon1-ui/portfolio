@@ -1,39 +1,53 @@
 // ==========================================
 // 관리자 API 호출
 // ------------------------------------------
-// 비밀번호는 로그인할 때 딱 한 번만 보낸다.
+// 비밀번호는 로그인할 때 딱 한 번만 보내고, 어디에도 남기지 않는다.
 // 그 뒤로는 서버가 준 토큰만 들고 다닌다.
-// 토큰은 sessionStorage에 두기 때문에 탭을 닫으면 사라진다.
+//
+// ★ 토큰은 이 변수(메모리)에만 있다. 브라우저 저장소를 쓰지 않는다.
+//   - 창이나 탭을 닫으면       → 사라짐
+//   - 새로고침(F5)해도         → 사라짐
+//   - 새 창·새 탭에서 열어도   → 없음
+//   - 브라우저가 탭을 복원해도 → 없음
+//   따라서 관리자 페이지에 들어올 때마다 비밀번호를 새로 입력하게 된다.
+//
+//   sessionStorage에 두면 새로고침과 탭 복원에서 살아남는다.
+//   그 편이 편리하지만, 매번 권한을 다시 확인받는 쪽을 택했다.
 // ==========================================
 
 import { config } from '../config.js';
 import { ApiError } from './client.js';
 
-const TOKEN_KEY = 'portfolio.admin.token';
+const STORAGE_KEY = 'portfolio.admin.token';
+
+// 페이지가 살아 있는 동안에만 존재하는 토큰
+let token = '';
 
 export const adminToken = {
   get() {
-    try {
-      return sessionStorage.getItem(TOKEN_KEY) ?? '';
-    } catch {
-      return '';
-    }
+    return token;
   },
-  set(token) {
-    try {
-      sessionStorage.setItem(TOKEN_KEY, token);
-    } catch {
-      /* 브라우저가 저장을 막아도 이번 세션 동안은 동작한다 */
-    }
+  set(value) {
+    token = value ?? '';
   },
   clear() {
-    try {
-      sessionStorage.removeItem(TOKEN_KEY);
-    } catch {
-      /* 무시 */
-    }
+    token = '';
   }
 };
+
+/**
+ * 예전 버전이 sessionStorage/localStorage에 남겨둔 토큰을 지운다.
+ * 이미 브라우저에 저장된 것이 있으면 계속 남아 있기 때문에, 시작할 때 한 번 치운다.
+ */
+export function purgeStoredTokens() {
+  for (const store of [globalThis.sessionStorage, globalThis.localStorage]) {
+    try {
+      store?.removeItem(STORAGE_KEY);
+    } catch {
+      /* 브라우저가 저장소를 막아둔 경우 — 지울 것도 없으므로 넘어간다 */
+    }
+  }
+}
 
 async function request(method, pathname, body) {
   const url = new URL(config.apiBaseUrl + pathname, window.location.origin);
@@ -95,6 +109,28 @@ export const adminApi = {
       await request('POST', '/admin/logout');
     } finally {
       adminToken.clear();
+    }
+  },
+
+  /**
+   * 창을 닫거나 다른 페이지로 떠날 때 서버 세션도 끊는다.
+   * 떠나는 중이라 보통의 요청은 취소되므로 keepalive로 보낸다.
+   * 실패해도 상관없다 — 토큰은 어차피 메모리와 함께 사라진다.
+   */
+  logoutOnExit() {
+    const current = adminToken.get();
+    if (!current) return;
+
+    adminToken.clear();
+
+    try {
+      fetch(new URL(`${config.apiBaseUrl}/admin/logout`, window.location.origin), {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${current}` },
+        keepalive: true
+      }).catch(() => {});
+    } catch {
+      /* 떠나는 중이므로 실패해도 무시한다 */
     }
   },
 

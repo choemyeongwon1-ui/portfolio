@@ -4,11 +4,11 @@
 // 로그인 → 목록 불러오기 → 선택/저장/삭제 순서로 묶는다.
 // ==========================================
 
-import { adminApi, adminToken } from '../api/admin.api.js';
+import { adminApi, adminToken, purgeStoredTokens } from '../api/admin.api.js';
 import { $ } from '../lib/dom.js';
 import { showToast } from '../lib/toast.js';
 
-import { initAuth, hasValidSession, showLogin, showAdmin } from './auth.js';
+import { initAuth, showLogin, showAdmin } from './auth.js';
 import { renderList } from './list.js';
 import {
   fillCategories,
@@ -262,15 +262,33 @@ function bindActions() {
   });
 }
 
-async function start() {
+/**
+ * 창을 닫거나 페이지를 떠날 때 흔적을 남기지 않는다.
+ * pagehide는 탭을 닫을 때도, 다른 페이지로 갈 때도 불린다.
+ */
+function bindExitCleanup() {
+  window.addEventListener('pagehide', () => {
+    adminApi.logoutOnExit();
+    purgeStoredTokens();
+
+    // 비밀번호 칸에 글자가 남아 있으면 지운다.
+    // (뒤로가기로 돌아올 때 브라우저가 값을 되살리는 것을 막는다)
+    const input = $('#loginPassword');
+    if (input) input.value = '';
+  });
+}
+
+function start() {
+  // 예전 버전이 브라우저에 남겨둔 토큰이 있으면 먼저 치운다.
+  purgeStoredTokens();
+
   bindActions();
+  bindExitCleanup();
   initAuth(enterAdmin);
 
-  if (await hasValidSession()) {
-    enterAdmin();
-  } else {
-    showLogin();
-  }
+  // 토큰은 메모리에만 있으므로, 이 페이지를 연 시점에는 항상 비어 있다.
+  // 따라서 확인할 것 없이 곧바로 로그인 화면을 보여준다.
+  showLogin();
 }
 
 document.addEventListener('DOMContentLoaded', start);

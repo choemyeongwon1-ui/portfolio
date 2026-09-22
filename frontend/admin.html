@@ -25,11 +25,17 @@
 
       <label class="field">
         <span class="field-label">비밀번호</span>
+        <!--
+          autocomplete="new-password" 는 브라우저가 저장해둔 비밀번호를
+          이 칸에 자동으로 채우지 않게 한다. 매번 직접 입력하도록 하기 위해서다.
+          ("current-password" 로 두면 브라우저가 기억했다가 알아서 채워 넣는다)
+        -->
         <input
           type="password"
           id="loginPassword"
           placeholder="예: 비밀번호를 입력하세요"
-          autocomplete="current-password"
+          autocomplete="new-password"
+          spellcheck="false"
           required
         />
       </label>
