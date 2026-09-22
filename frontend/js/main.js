@@ -57,6 +57,8 @@ async function loadData() {
   });
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function start() {
   // 데이터가 없어도 동작하는 기능은 먼저 켠다.
   initNavbar();
@@ -64,10 +66,29 @@ async function start() {
 
   try {
     await loadData();
-  } catch (error) {
-    showFatalError(error.message);
-    showToast('데이터를 불러오지 못했습니다.');
-    return;
+  } catch (firstError) {
+    // 배포된 서버(무료 플랜)는 잠들어 있다가 첫 요청과 함께 깨어난다.
+    // 깨어나는 바로 그 순간에 여러 요청이 한꺼번에 몰리면(첫 로딩은
+    // 프로필·기술·분야·프로젝트 4개를 동시에 부른다) 그중 일부만
+    // 그 짧은 틈에 실패할 수 있다. 진짜 오류인지, 막 깨어나던
+    // 타이밍 문제였는지 구분하기 위해 한 번만 조용히 다시 시도한다.
+    const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+    if (!isLocal) {
+      await wait(4000);
+
+      try {
+        await loadData();
+      } catch (secondError) {
+        showFatalError(secondError.message);
+        showToast('데이터를 불러오지 못했습니다.');
+        return;
+      }
+    } else {
+      showFatalError(firstError.message);
+      showToast('데이터를 불러오지 못했습니다.');
+      return;
+    }
   }
 
   renderProfile(store.profile);
