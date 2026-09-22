@@ -32,6 +32,19 @@ export class BadRequestError extends AppError {
   }
 }
 
+/**
+ * 이미 있는 것과 부딪힐 때 쓴다 (예: 중복 프로젝트).
+ * 잘못된 요청이 아니라 "판단이 필요한 상황"이므로 400이 아니라 409를 쓴다.
+ */
+export class ConflictError extends AppError {
+  constructor(message, { duplicate } = {}) {
+    super(message, { status: 409, code: 'DUPLICATE_PROJECT' });
+    this.name = 'ConflictError';
+    // 화면에서 "통합할까요?" 를 물어보려면 상대 프로젝트가 필요하다.
+    this.duplicate = duplicate;
+  }
+}
+
 export class UnauthorizedError extends AppError {
   constructor(message = '로그인이 필요합니다.') {
     super(message, { status: 401, code: 'UNAUTHORIZED' });

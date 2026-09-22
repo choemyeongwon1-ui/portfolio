@@ -63,6 +63,8 @@ async function request(method, pathname, body) {
       );
       // 어느 칸이 잘못됐는지 서버가 알려주면 함께 전달한다.
       error.details = payload?.error?.details ?? [];
+      // 중복이면 상대 프로젝트도 함께 전달한다 (통합 여부를 묻기 위해).
+      error.duplicate = payload?.error?.duplicate ?? null;
       throw error;
     }
 
@@ -104,6 +106,11 @@ export const adminApi = {
   /** 초안까지 포함한 전체 목록 */
   listProjects() {
     return request('GET', '/admin/projects');
+  },
+
+  /** 이미 저장된 것들 중 겹치는 묶음 */
+  getDuplicates() {
+    return request('GET', '/admin/duplicates');
   },
 
   createProject(project) {

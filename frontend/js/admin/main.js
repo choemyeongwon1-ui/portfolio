@@ -21,6 +21,13 @@ import {
   hideFormMessage,
   syncStatusUi
 } from './form.js';
+import {
+  showTitleHint,
+  showDuplicatePanel,
+  hideDuplicatePanel,
+  renderDuplicateBanner,
+  mergeInto
+} from './duplicate.js';
 
 const state = {
   projects: [],
@@ -36,6 +43,9 @@ function selectProject(id) {
   state.selectedId = id;
   state.selected = state.projects.find((item) => item.id === id) ?? null;
 
+  hideDuplicatePanel();
+  $('#dupHint').hidden = true;
+
   fillForm(state.selected);
   renderList(state.projects, state.categories, state.selectedId, selectProject);
 }
@@ -43,6 +53,10 @@ function selectProject(id) {
 function startNewProject() {
   state.selectedId = null;
   state.selected = null;
+
+  hideDuplicatePanel();
+  $('#dupHint').hidden = true;
+
   fillForm(null);
   renderList(state.projects, state.categories, null, selectProject);
   $('#fTitle')?.focus();
@@ -52,6 +66,20 @@ async function loadProjects() {
   const result = await adminApi.listProjects();
   state.projects = result?.items ?? [];
   renderList(state.projects, state.categories, state.selectedId, selectProject);
+  await loadDuplicateBanner();
+}
+
+/** 이미 저장된 것들 중 겹치는 묶음을 목록 위에 보여준다. */
+async function loadDuplicateBanner() {
+  try {
+    const groups = await adminApi.getDuplicates();
+    renderDuplicateBanner(groups, {
+      onOpen: selectProject,
+      onDelete: (id) => removeProject(id)
+    });
+  } catch {
+    // 중복 안내는 없어도 관리 기능에는 지장이 없으므로 조용히 넘어간다.
+  }
 }
 
 /** 로그인이 풀렸을 때 로그인 화면으로 되돌린다. */
@@ -65,14 +93,19 @@ function handleAuthError(error) {
   return false;
 }
 
-async function handleSave(event) {
-  event.preventDefault();
+/**
+ * 저장한다.
+ * @param {{ allowDuplicate?: boolean }} [options] 중복 경고를 무시하고 저장할지
+ */
+async function handleSave(event, { allowDuplicate = false } = {}) {
+  event?.preventDefault?.();
 
   const saveBtn = $('#saveBtn');
   const values = readForm();
 
   clearErrors();
   hideFormMessage();
+  hideDuplicatePanel();
 
   // 화면에서 먼저 확인한다 (서버도 같은 규칙으로 다시 확인한다)
   const errors = validateForm(values);
@@ -86,10 +119,12 @@ async function handleSave(event) {
   saveBtn.disabled = true;
   saveBtn.textContent = '저장 중…';
 
+  const payload = allowDuplicate ? { ...values, allowDuplicate: true } : values;
+
   try {
     const saved = state.selectedId
-      ? await adminApi.updateProject(state.selectedId, values)
-      : await adminApi.createProject(values);
+      ? await adminApi.updateProject(state.selectedId, payload)
+      : await adminApi.createProject(payload);
 
     state.selectedId = saved.id;
     state.selected = saved;
@@ -107,6 +142,16 @@ async function handleSave(event) {
   } catch (error) {
     if (handleAuthError(error)) return;
 
+    // 중복이면 막지 말고 어떻게 할지 묻는다.
+    if (error.status === 409 && error.duplicate) {
+      showDuplicatePanel(error.duplicate, {
+        onMerge: (existing) => mergeWithExisting(existing, values),
+        onSaveAnyway: () => handleSave(null, { allowDuplicate: true })
+      });
+      showFormMessage(error.message, 'error');
+      return;
+    }
+
     // 서버가 어느 칸이 문제인지 알려주면 그대로 표시한다.
     if (error.details?.length) {
       showFieldErrors(error.details);
@@ -118,25 +163,55 @@ async function handleSave(event) {
   }
 }
 
-async function handleDelete() {
-  if (!state.selectedId) return;
+/**
+ * 중복으로 걸린 기존 프로젝트를 불러와, 지금 쓴 값으로 빈 칸만 채운다.
+ * 바로 저장하지 않는다 — 합쳐진 모습을 눈으로 확인하고 저장하도록.
+ */
+function mergeWithExisting(existing, values) {
+  hideDuplicatePanel();
 
-  const project = state.projects.find((item) => item.id === state.selectedId);
+  const merged = mergeInto(existing, values);
+
+  state.selectedId = existing.id;
+  state.selected = existing;
+
+  fillForm(merged);
+  renderList(state.projects, state.categories, state.selectedId, selectProject);
+
+  showFormMessage(
+    '기존 프로젝트를 불러와 빈 칸만 채웠습니다. 내용을 확인한 뒤 저장하세요. ' +
+      '기존에 값이 있던 칸은 바뀌지 않았습니다.',
+    'success'
+  );
+}
+
+/** id로 삭제한다 (양식의 삭제 버튼과 중복 안내의 삭제 버튼이 함께 쓴다) */
+async function removeProject(id) {
+  const project = state.projects.find((item) => item.id === id);
   const name = project?.title || '제목 없는 프로젝트';
 
   if (!window.confirm(`"${name}" 을(를) 삭제할까요?\n삭제하면 되돌릴 수 없습니다.`)) return;
 
   try {
-    await adminApi.deleteProject(state.selectedId);
-    state.selectedId = null;
-    state.selected = null;
+    await adminApi.deleteProject(id);
+
+    if (state.selectedId === id) {
+      state.selectedId = null;
+      state.selected = null;
+      fillForm(null);
+    }
+
     await loadProjects();
-    fillForm(null);
     showToast('삭제되었습니다');
   } catch (error) {
     if (handleAuthError(error)) return;
     showFormMessage(error.message, 'error');
   }
+}
+
+function handleDelete() {
+  if (!state.selectedId) return;
+  return removeProject(state.selectedId);
 }
 
 async function enterAdmin() {
@@ -179,9 +254,11 @@ function bindActions() {
     syncStatusUi(state.selected);
   });
 
-  // 칸을 채우는 동안 "무엇이 더 필요한지" 안내를 갱신한다.
+  // 칸을 채우는 동안 안내를 갱신한다.
   $('#projectForm')?.addEventListener('input', () => {
     syncStatusUi(state.selected);
+    // 제목·링크를 쓰는 동안 같은 프로젝트가 있는지 미리 알려준다.
+    showTitleHint(readForm(), state.projects, state.selectedId);
   });
 }
 

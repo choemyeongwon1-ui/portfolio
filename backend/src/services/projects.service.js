@@ -14,8 +14,9 @@
 import crypto from 'node:crypto';
 
 import { projectsRepository } from '../repositories/index.js';
-import { NotFoundError, BadRequestError } from '../lib/AppError.js';
+import { NotFoundError, BadRequestError, ConflictError } from '../lib/AppError.js';
 import { withJosa } from '../lib/josa.js';
+import { findDuplicate, findDuplicateGroups } from '../lib/duplicate.js';
 
 export const PROJECT_STATUS = { DRAFT: 'draft', PUBLISHED: 'published' };
 
@@ -110,6 +111,27 @@ function validate(project, categories) {
   return errors;
 }
 
+/**
+ * 겹치는 프로젝트가 있으면 409로 알린다.
+ * 저장을 막는 것이 목적이 아니라, 관리자에게 물어보기 위해서다.
+ * allowDuplicate가 true면 (관리자가 "그래도 저장"을 고르면) 그냥 넘어간다.
+ */
+async function assertNotDuplicate(project, { allowDuplicate, excludeId } = {}) {
+  if (allowDuplicate) return;
+
+  const all = await projectsRepository.findAll({ includeDrafts: true });
+  const found = findDuplicate(project, all, excludeId);
+
+  if (!found) return;
+
+  throw new ConflictError(
+    `${withJosa(found.reason, '이/가')} 같은 프로젝트가 이미 있습니다: "${
+      found.project.title || '제목 없음'
+    }"`,
+    { duplicate: { ...found.project, matchedBy: found.reason } }
+  );
+}
+
 export const projectsService = {
   /** 필터 탭 목록 */
   async getCategories() {
@@ -144,8 +166,18 @@ export const projectsService = {
     return project;
   },
 
-  /** 새 프로젝트 저장 (관리자) */
-  async createProject(input) {
+  /** 이미 저장된 목록에서 겹치는 묶음을 찾는다 (관리자) */
+  async getDuplicateGroups() {
+    const all = await projectsRepository.findAll({ includeDrafts: true });
+    return findDuplicateGroups(all);
+  },
+
+  /**
+   * 새 프로젝트 저장 (관리자)
+   * @param {object} input
+   * @param {{ allowDuplicate?: boolean }} [options] 중복이어도 그냥 저장할지
+   */
+  async createProject(input, { allowDuplicate = false } = {}) {
     const categories = await projectsRepository.findCategories();
     const project = normalize(input);
     const errors = validate(project, categories);
@@ -153,6 +185,8 @@ export const projectsService = {
     if (errors.length) {
       throw new BadRequestError(errors[0].message, errors);
     }
+
+    await assertNotDuplicate(project, { allowDuplicate });
 
     const now = new Date().toISOString();
 
@@ -165,7 +199,7 @@ export const projectsService = {
   },
 
   /** 기존 프로젝트 수정 (관리자) */
-  async updateProject(id, input) {
+  async updateProject(id, input, { allowDuplicate = false } = {}) {
     const existing = await projectsRepository.findById(id, { includeDrafts: true });
 
     if (!existing) {
@@ -179,6 +213,9 @@ export const projectsService = {
     if (errors.length) {
       throw new BadRequestError(errors[0].message, errors);
     }
+
+    // 자기 자신은 중복이 아니므로 제외하고 확인한다.
+    await assertNotDuplicate(project, { allowDuplicate, excludeId: id });
 
     return projectsRepository.update(id, {
       ...existing,

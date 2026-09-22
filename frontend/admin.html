@@ -68,6 +68,10 @@
         </div>
 
         <p class="list-count" id="listCount">불러오는 중…</p>
+
+        <!-- 이미 저장된 것들 중 겹치는 묶음 안내 -->
+        <div class="dup-banner" id="dupBanner" hidden></div>
+
         <ul class="project-list" id="projectList"></ul>
       </aside>
 
@@ -114,6 +118,8 @@
               <span class="field-label">제목 <b class="req">*</b></span>
               <input type="text" name="title" id="fTitle"
                 placeholder="예: 캠퍼스 에너지 사용 현황 시각화" />
+              <!-- 쓰는 동안 같은 프로젝트가 있으면 알려준다 -->
+              <span class="dup-hint" id="dupHint" hidden></span>
               <span class="field-error" data-error-for="title"></span>
             </label>
 
@@ -181,6 +187,9 @@ placeholder="예:
             </label>
 
           </div>
+
+          <!-- 저장하려는데 중복이 걸렸을 때 뜨는 선택 상자 -->
+          <div class="dup-panel" id="dupPanel" hidden></div>
 
           <p class="form-message" id="formMessage" hidden></p>
 

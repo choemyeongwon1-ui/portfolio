@@ -45,15 +45,28 @@ export const adminController = {
     res.json({ data: project });
   }),
 
+  // GET /api/admin/duplicates — 이미 저장된 것들 중 겹치는 묶음
+  duplicates: asyncHandler(async (req, res) => {
+    const groups = await projectsService.getDuplicateGroups();
+    res.json({ data: groups });
+  }),
+
   // POST /api/admin/projects
+  // body의 allowDuplicate가 true면 중복이어도 저장한다 (관리자가 "그래도 저장"을 고른 경우)
   create: asyncHandler(async (req, res) => {
-    const project = await projectsService.createProject(req.body ?? {});
+    const body = req.body ?? {};
+    const project = await projectsService.createProject(body, {
+      allowDuplicate: body.allowDuplicate === true
+    });
     res.status(201).json({ data: project });
   }),
 
   // PUT /api/admin/projects/:id
   update: asyncHandler(async (req, res) => {
-    const project = await projectsService.updateProject(req.params.id, req.body ?? {});
+    const body = req.body ?? {};
+    const project = await projectsService.updateProject(req.params.id, body, {
+      allowDuplicate: body.allowDuplicate === true
+    });
     res.json({ data: project });
   }),
 

@@ -27,6 +27,8 @@ export function errorHandler(error, req, res, next) {
       message,
       // 어느 칸이 잘못됐는지 화면이 표시할 수 있게 함께 보낸다.
       ...(error.details ? { details: error.details } : {}),
+      // 중복일 때는 상대 프로젝트도 함께 보낸다 (통합 여부를 물어보기 위해).
+      ...(error.duplicate ? { duplicate: error.duplicate } : {}),
       ...(config.env === 'development' && error.stack ? { stack: error.stack } : {})
     }
   });

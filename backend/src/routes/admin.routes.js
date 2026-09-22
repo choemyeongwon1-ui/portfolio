@@ -21,6 +21,8 @@ router.use(requireAuth);
 router.get('/session', adminController.session);
 router.post('/logout', adminController.logout);
 
+router.get('/duplicates', adminController.duplicates);
+
 router.get('/projects', adminController.list);
 router.post('/projects', adminController.create);
 router.get('/projects/:id', adminController.detail);

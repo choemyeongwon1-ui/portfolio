@@ -368,3 +368,69 @@ body {
   .admin-form { padding: 1.1rem; }
   .form-actions .btn-danger { margin-left: 0; }
 }
+
+/* ==========================================
+   중복 안내
+   ========================================== */
+
+/* 제목 칸 아래의 짧은 안내 */
+.dup-hint {
+  font-size: 0.81rem;
+  line-height: 1.5;
+  color: #8a6d2f;
+  background: var(--draft-bg);
+  border: 1px solid rgba(154,139,82,0.35);
+  border-radius: 7px;
+  padding: 0.4rem 0.6rem;
+}
+
+/* 저장하려다 중복이 걸렸을 때 뜨는 선택 상자 */
+.dup-panel {
+  border: 2px solid var(--draft);
+  background: var(--draft-bg);
+  border-radius: 10px;
+  padding: 0.95rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.dup-title  { font-weight: 800; font-size: 0.95rem; color: #8a6d2f; }
+.dup-target { font-size: 0.93rem; font-weight: 700; color: var(--text); }
+.dup-help   { font-size: 0.81rem; color: var(--text-sub); line-height: 1.55; }
+.dup-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
+
+/* 목록 위의 "이미 중복이 있습니다" 안내 */
+.dup-banner {
+  border: 1.5px solid rgba(154,139,82,0.4);
+  background: var(--draft-bg);
+  border-radius: 10px;
+  padding: 0.8rem 0.85rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.dup-banner-head { font-weight: 800; font-size: 0.89rem; color: #8a6d2f; }
+
+.dup-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.dup-group-head { font-size: 0.8rem; color: var(--text-sub); font-weight: 700; }
+
+.dup-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+}
+.dup-row-title {
+  flex: 1;
+  min-width: 7rem;
+  font-size: 0.87rem;
+  font-weight: 700;
+  word-break: keep-all;
+}
+.dup-row-actions { display: flex; gap: 0.3rem; }
+.dup-row-actions .btn { padding: 0.28rem 0.55rem; font-size: 0.79rem; }
