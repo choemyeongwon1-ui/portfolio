@@ -12,11 +12,15 @@
 </head>
 
 <!--
-  data-api-base : 백엔드 API 주소.
-  같은 서버가 프론트엔드를 함께 제공하면 "/api" 그대로 두면 되고,
-  백엔드를 따로 배포하면 "https://내-서버-주소/api" 처럼 바꾸면 된다.
+  data-api-base : 백엔드 API 주소를 강제로 지정하고 싶을 때만 쓴다.
+  비워 두면(지금처럼) js/config.js 가 알아서 정한다 —
+  localhost 면 같은 서버의 "/api", 아니면 배포된 백엔드(Render) 주소.
+  ★ 이 값을 채워 넣으면 그 값이 항상 최우선이 된다. 예전에 여기
+  "/api"를 박아 뒀다가, 배포된 사이트에서까지 자기 자신의 "/api"
+  (존재하지 않는 경로)를 부르는 바람에 데이터를 못 가져온 적이 있다 —
+  같은 실수를 반복하지 않도록 비워 둔다.
 -->
-<body data-api-base="/api">
+<body data-api-base="">
 
   <!-- 햇빛 + 나무 그림자 배경 -->
   <div class="tree-shadow-bg" aria-hidden="true">
