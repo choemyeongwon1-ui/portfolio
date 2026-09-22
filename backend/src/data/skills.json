@@ -1,0 +1,45 @@
+{
+  "groups": [
+    {
+      "id": "skillCat1",
+      "emoji": "🏗️",
+      "title": "도시 설계",
+      "items": [
+        { "name": "도시계획 이론", "level": 75 },
+        { "name": "GIS 활용", "level": 60 },
+        { "name": "건축 설계 기초", "level": 65 }
+      ]
+    },
+    {
+      "id": "skillCat2",
+      "emoji": "💻",
+      "title": "디지털 기술",
+      "items": [
+        { "name": "데이터 분석", "level": 70 },
+        { "name": "프로그래밍 기초", "level": 55 },
+        { "name": "스마트 인프라", "level": 68 }
+      ]
+    },
+    {
+      "id": "skillCat3",
+      "emoji": "🌿",
+      "title": "친환경 분야",
+      "items": [
+        { "name": "지속가능 개발", "level": 80 },
+        { "name": "에너지 효율화", "level": 62 },
+        { "name": "환경 영향 평가", "level": 58 }
+      ]
+    }
+  ],
+  "tags": [
+    "스마트시티",
+    "IoT",
+    "도시계획",
+    "친환경",
+    "데이터 분석",
+    "GIS",
+    "지속가능성",
+    "그린테크",
+    "스마트 모빌리티"
+  ]
+}

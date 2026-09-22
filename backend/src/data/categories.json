@@ -1,0 +1,6 @@
+[
+  { "id": "all", "label": "전체", "description": "모든 프로젝트" },
+  { "id": "web", "label": "웹", "description": "웹·서비스·디지털 인터페이스" },
+  { "id": "data", "label": "데이터", "description": "분석, 시각화, 공공데이터, 공간정보(GIS)" },
+  { "id": "design", "label": "디자인", "description": "시각디자인, UX/UI, 정보구조" }
+]

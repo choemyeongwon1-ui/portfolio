@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-frontend",
+  "version": "1.0.0",
+  "description": "포트폴리오 화면 (정적 파일 + ES 모듈)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "//": "빌드 도구가 필요 없다. 평소에는 백엔드(npm run dev)가 이 폴더를 함께 제공한다.",
+    "//serve": "프론트엔드만 따로 띄우고 싶을 때 쓴다. 이때는 index.html의 data-api-base를 백엔드 주소로 바꿔야 한다.",
+    "serve": "npx --yes serve . --listen 5173"
+  }
+}

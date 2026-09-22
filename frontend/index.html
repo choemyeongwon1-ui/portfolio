@@ -8,9 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Gaegu:wght@300;400;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
+
+<!--
+  data-api-base : 백엔드 API 주소.
+  같은 서버가 프론트엔드를 함께 제공하면 "/api" 그대로 두면 되고,
+  백엔드를 따로 배포하면 "https://내-서버-주소/api" 처럼 바꾸면 된다.
+-->
+<body data-api-base="/api">
 
   <!-- 햇빛 + 나무 그림자 배경 -->
   <div class="tree-shadow-bg" aria-hidden="true">
@@ -93,9 +99,12 @@
     </svg>
   </div>
 
+  <!-- 데이터를 불러오지 못했을 때만 보이는 안내 -->
+  <div class="app-error" id="appError" role="alert" hidden></div>
+
   <!-- 네비게이션 -->
   <nav class="navbar" id="navbar">
-    <div class="nav-brand">MW 🌿</div>
+    <div class="nav-brand" id="navBrand">MW 🌿</div>
     <ul class="nav-links">
       <li><a href="#hero"     class="nav-link">홈</a></li>
       <li><a href="#about"    class="nav-link">소개</a></li>
@@ -103,26 +112,37 @@
       <li><a href="#projects" class="nav-link">프로젝트</a></li>
       <li><a href="#contact"  class="nav-link">연락처</a></li>
     </ul>
-    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-right">
+      <div class="share-wrap">
+        <button class="share-btn" id="shareBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="shareMenu">
+          <span class="share-ico" aria-hidden="true">⇪</span>공유하기
+        </button>
+        <div class="share-menu" id="shareMenu" role="menu" hidden>
+          <button class="share-item" id="shareLinkBtn" type="button" role="menuitem">
+            <span aria-hidden="true">🔗</span>
+            <span><strong>링크 공유</strong><small>이 페이지 주소를 복사합니다</small></span>
+          </button>
+          <button class="share-item" id="sharePdfBtn" type="button" role="menuitem">
+            <span aria-hidden="true">📄</span>
+            <span><strong>PDF 공유</strong><small>핵심 내용만 문서로 저장합니다</small></span>
+          </button>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
-  <!-- 히어로 섹션 -->
+  <!-- 히어로 섹션 — 내용은 /api/profile 에서 채워진다 -->
   <section class="hero" id="hero">
     <div class="hero-content">
-      <div class="hero-tag">그린스마트시티학과 🌱</div>
-      <h1 class="hero-title">
-        안녕하세요!<br />
-        저는 <em>최명원</em>이에요 🌿
-      </h1>
-      <p class="hero-desc">
-        더 푸르고 스마트한 도시를 꿈꾸는 학생이에요.<br />
-        자연과 기술이 함께하는 도시를 만들고 싶어요 🌳
-      </p>
+      <div class="hero-tag" id="heroTag"></div>
+      <h1 class="hero-title" id="heroTitle"></h1>
+      <p class="hero-desc" id="heroDesc"></p>
       <div class="hero-btns">
-        <a href="#about"   class="btn btn-solid"   id="heroAboutBtn">저를 알아보세요</a>
-        <a href="#contact" class="btn btn-ghost"   id="heroContactBtn">연락해요 ✉️</a>
+        <a href="#about"   class="btn btn-solid" id="heroAboutBtn">저를 알아보세요</a>
+        <a href="#contact" class="btn btn-ghost" id="heroContactBtn">연락해요 ✉️</a>
       </div>
     </div>
 
@@ -130,16 +150,12 @@
       <div class="profile-card">
         <div class="avatar-wrap">
           <div class="avatar">
-            <span>최명원</span>
+            <span id="avatarName"></span>
           </div>
           <div class="avatar-deco">🌿</div>
         </div>
         <div class="card-divider"></div>
-        <ul class="card-info-list">
-          <li><span class="ci-icon">🎓</span><div><small>학번</small><strong>202421390</strong></div></li>
-          <li><span class="ci-icon">🌱</span><div><small>학과</small><strong>그린스마트시티학과</strong></div></li>
-          <li><span class="ci-icon">🎂</span><div><small>생년월일</small><strong>2004년 3월 14일</strong></div></li>
-        </ul>
+        <ul class="card-info-list" id="profileCardList"></ul>
       </div>
       <!-- 카드 주변 장식 -->
       <div class="deco-leaf deco-1">🍃</div>
@@ -155,144 +171,45 @@
         <span class="sec-label">✦ 저는요 ✦</span>
         <h2 class="sec-title">나는 이런 사람이에요</h2>
       </div>
-      <div class="about-grid">
-        <div class="acard" id="aboutCard1">
-          <span class="acard-emoji">🎯</span>
-          <h3>꿈꾸는 것</h3>
-          <p>스마트시티 기술로 사람과 자연이 함께 숨쉬는 도시를 만들고 싶어요. 거창한 게 아니라, 그냥 살기 좋은 동네요!</p>
-        </div>
-        <div class="acard" id="aboutCard2">
-          <span class="acard-emoji">🔍</span>
-          <h3>관심 있는 것</h3>
-          <p>도시계획, 스마트 인프라, GIS, 친환경 건축... 도시가 어떻게 돌아가는지 궁금한 게 참 많아요.</p>
-        </div>
-        <div class="acard" id="aboutCard3">
-          <span class="acard-emoji">🌱</span>
-          <h3>믿는 것</h3>
-          <p>기술은 사람을 위해 있어야 한다고 생각해요. 더 많은 사람이 행복한 도시, 그게 제 방향이에요.</p>
-        </div>
-      </div>
+
+      <div class="about-grid" id="aboutGrid"></div>
 
       <div class="info-table">
-        <div class="info-row">
-          <div class="info-item"><label>이름</label><span>최명원</span></div>
-          <div class="info-item"><label>생년월일</label><span>2004. 03. 14</span></div>
-          <div class="info-item"><label>학과</label><span>그린스마트시티학과</span></div>
-          <div class="info-item"><label>학번</label><span>202421390</span></div>
-        </div>
+        <div class="info-row" id="infoRow"></div>
       </div>
     </div>
   </section>
 
-  <!-- 기술 섹션 -->
+  <!-- 기술 섹션 — 내용은 /api/skills 에서 채워진다 -->
   <section class="skills section" id="skills">
     <div class="container">
       <div class="section-header">
         <span class="sec-label">✦ 배우는 중 ✦</span>
         <h2 class="sec-title">요즘 이런 걸 공부해요</h2>
       </div>
-      <div class="skills-grid">
-        <div class="skill-box" id="skillCat1">
-          <h3><span>🏗️</span> 도시 설계</h3>
-          <div class="skill-list">
-            <div class="sk-item">
-              <div class="sk-top"><span>도시계획 이론</span><span>75%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="75"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>GIS 활용</span><span>60%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="60"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>건축 설계 기초</span><span>65%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="65"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="skill-box" id="skillCat2">
-          <h3><span>💻</span> 디지털 기술</h3>
-          <div class="skill-list">
-            <div class="sk-item">
-              <div class="sk-top"><span>데이터 분석</span><span>70%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="70"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>프로그래밍 기초</span><span>55%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="55"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>스마트 인프라</span><span>68%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="68"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="skill-box" id="skillCat3">
-          <h3><span>🌿</span> 친환경 분야</h3>
-          <div class="skill-list">
-            <div class="sk-item">
-              <div class="sk-top"><span>지속가능 개발</span><span>80%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="80"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>에너지 효율화</span><span>62%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="62"></div></div>
-            </div>
-            <div class="sk-item">
-              <div class="sk-top"><span>환경 영향 평가</span><span>58%</span></div>
-              <div class="sk-bar"><div class="sk-fill" data-w="58"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="tag-cloud">
-        <span class="tag">스마트시티</span>
-        <span class="tag">IoT</span>
-        <span class="tag">도시계획</span>
-        <span class="tag">친환경</span>
-        <span class="tag">데이터 분석</span>
-        <span class="tag">GIS</span>
-        <span class="tag">지속가능성</span>
-        <span class="tag">그린테크</span>
-        <span class="tag">스마트 모빌리티</span>
-      </div>
+      <div class="skills-grid" id="skillsGrid"></div>
+      <div class="tag-cloud" id="tagCloud"></div>
     </div>
   </section>
 
-  <!-- 프로젝트 섹션 -->
+  <!-- 프로젝트 섹션 — 내용은 /api/projects 에서 채워진다 -->
   <section class="projects section" id="projects">
-    <div class="container">
-      <div class="section-header">
-        <span class="sec-label">✦ 해봤어요 ✦</span>
-        <h2 class="sec-title">이런 프로젝트를 했어요</h2>
-      </div>
-      <div class="proj-grid">
-        <div class="proj-card featured" id="projectCard1">
-          <span class="proj-badge">⭐ 주요 프로젝트</span>
-          <span class="proj-emoji">🏙️</span>
-          <h3>스마트시티 설계 연구</h3>
-          <p>수업에서 진행한 미래 도시 설계 프로젝트예요. 지속 가능한 에너지 시스템과 스마트 교통 인프라를 합쳐서 도시 모델을 직접 만들어 봤어요.</p>
-          <div class="proj-tags">
-            <span>도시설계</span><span>GIS</span><span>친환경</span>
-          </div>
-        </div>
-        <div class="proj-card" id="projectCard2">
-          <span class="proj-emoji">🌿</span>
-          <h3>그린 인프라 분석</h3>
-          <p>도시 녹지 공간을 어떻게 배치하면 좋을지 연구했어요. 도심 열섬 현상을 줄이는 방법을 찾아봤답니다.</p>
-          <div class="proj-tags">
-            <span>환경분석</span><span>도시계획</span>
-          </div>
-        </div>
-        <div class="proj-card" id="projectCard3">
-          <span class="proj-emoji">📊</span>
-          <h3>도시 데이터 시각화</h3>
-          <p>공공 데이터로 교통량, 에너지 소비, 인구 분포를 분석하고 시각화해 봤어요.</p>
-          <div class="proj-tags">
-            <span>데이터 분석</span><span>시각화</span>
-          </div>
-        </div>
-      </div>
+    <div class="portfolio-doc">
+      <div class="doc-top">프로젝트</div>
+
+      <header class="doc-header">
+        <h2>분야별 프로젝트</h2>
+        <p>관심 분야를 골라 프로젝트를 확인할 수 있습니다</p>
+      </header>
+
+      <div class="filter-bar" id="filterBar" aria-label="프로젝트 분야 필터"></div>
+
+      <div class="proj-summary" id="projSummary">불러오는 중…</div>
+
+      <div class="proj-grid" id="projGrid"></div>
+
+      <p class="proj-empty" id="projEmpty" hidden>해당 분야의 프로젝트가 아직 없습니다.</p>
     </div>
   </section>
 
@@ -304,28 +221,9 @@
         <h2 class="sec-title">같이 이야기해요 ☕</h2>
       </div>
       <div class="contact-wrap">
-        <div class="contact-cards">
-          <div class="ct-card" id="contactCard1">
-            <span>🎓</span>
-            <div><small>소속</small><strong>그린스마트시티학과</strong></div>
-          </div>
-          <div class="ct-card" id="contactCard2">
-            <span>🆔</span>
-            <div><small>학번</small><strong>202421390</strong></div>
-          </div>
-          <div class="ct-card" id="contactCard3">
-            <span>👋</span>
-            <div><small>이름</small><strong>최명원</strong></div>
-          </div>
-        </div>
+        <div class="contact-cards" id="contactCards"></div>
         <div class="contact-msg">
-          <div class="msg-bubble">
-            <p class="msg-hi">안녕하세요! 👋</p>
-            <p>스마트시티나 친환경 도시 관련해서 이야기 나눠보고 싶은 분 계시면 편하게 연락 주세요. 같이 고민하고 배워가는 거 좋아해요 🌱</p>
-            <div class="msg-footer">
-              <span>🌿</span><span>🌱</span><span>🍃</span><span>🌳</span>
-            </div>
-          </div>
+          <div class="msg-bubble" id="msgBubble"></div>
         </div>
       </div>
     </div>
@@ -334,12 +232,18 @@
   <!-- 푸터 -->
   <footer class="footer">
     <div class="footer-inner">
-      <p class="footer-name">최명원 🌿</p>
-      <p class="footer-info">그린스마트시티학과 · 202421390</p>
-      <p class="footer-copy">© 2026 · 더 푸른 도시를 꿈꾸며 🌳</p>
+      <p class="footer-name" id="footerName"></p>
+      <p class="footer-info" id="footerInfo"></p>
+      <p class="footer-copy" id="footerCopy"></p>
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- 공유 안내 토스트 -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- PDF 추출용 구조화 문서 (화면에는 보이지 않고 인쇄 시에만 사용) -->
+  <div class="pdf-doc" id="pdfDoc" aria-hidden="true"></div>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
