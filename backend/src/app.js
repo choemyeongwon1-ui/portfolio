@@ -13,9 +13,13 @@ import { config } from './config/index.js';
 import apiRoutes from './routes/index.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { securityHeaders } from './middleware/securityHeaders.js';
 
 export function createApp() {
   const app = express();
+
+  // 클릭재킹 등을 막는 보안 헤더 — 모든 응답에 붙인다.
+  app.use(securityHeaders);
 
   // 프론트엔드가 다른 주소에서 돌아가도 API를 부를 수 있게 한다.
   app.use(
