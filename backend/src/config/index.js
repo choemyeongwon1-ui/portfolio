@@ -6,15 +6,20 @@
 // 새 설정이 필요하면 여기에만 추가하면 된다.
 // ==========================================
 
-import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 // backend/src/config → backend/src → backend → portfolio-site
 const backendRoot = path.resolve(here, '..', '..');
 const projectRoot = path.resolve(backendRoot, '..');
+
+// .env는 항상 backend 폴더에서 찾는다.
+// 'dotenv/config'를 그냥 부르면 "명령을 실행한 위치" 기준으로 찾기 때문에,
+// 루트에서 `node backend/src/server.js` 로 켜면 설정을 놓친다.
+dotenv.config({ path: path.join(backendRoot, '.env'), quiet: true });
 
 function toBool(value, fallback) {
   if (value === undefined) return fallback;
@@ -34,6 +39,17 @@ export const config = {
   database: {
     url: process.env.DATABASE_URL || '',
     name: process.env.DATABASE_NAME || 'portfolio'
+  },
+
+  // 관리자 로그인 설정.
+  // 비밀번호는 여기(서버)에서만 다루며, 프론트엔드로 절대 내보내지 않는다.
+  admin: {
+    // 권장: `npm run set-password` 로 만든 해시를 .env의 ADMIN_PASSWORD_HASH에 넣는다.
+    passwordHash: process.env.ADMIN_PASSWORD_HASH || '',
+    // 해시가 없을 때만 쓰는 임시 방편. 평문이므로 개발 중에만 사용한다.
+    passwordPlain: process.env.ADMIN_PASSWORD || '',
+    // 로그인 유지 시간 (분)
+    sessionTtlMs: (Number(process.env.ADMIN_SESSION_MINUTES) || 120) * 60 * 1000
   },
 
   // 프론트엔드에서 API를 호출할 수 있게 허용할 주소 목록.

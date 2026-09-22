@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>프로젝트 관리 · 최명원 포트폴리오</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body data-api-base="/api">
+
+  <!-- ================= 로그인 화면 ================= -->
+  <div class="login-screen" id="loginScreen">
+    <form class="login-box" id="loginForm" autocomplete="off">
+      <h1>프로젝트 관리</h1>
+      <p class="login-sub">관리자 비밀번호를 입력하세요</p>
+
+      <label class="field">
+        <span class="field-label">비밀번호</span>
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="예: 비밀번호를 입력하세요"
+          autocomplete="current-password"
+          required
+        />
+      </label>
+
+      <p class="login-error" id="loginError" hidden></p>
+
+      <button type="submit" class="btn btn-primary" id="loginSubmit">로그인</button>
+
+      <p class="login-hint">
+        비밀번호를 잊으셨다면 터미널에서 <code>npm run set-password</code> 를 실행해 새로 정하세요.
+      </p>
+    </form>
+  </div>
+
+  <!-- ================= 관리 화면 ================= -->
+  <div class="admin" id="adminScreen" hidden>
+
+    <header class="admin-top">
+      <div>
+        <h1>프로젝트 관리</h1>
+        <p class="admin-sub">여기서 저장하면 포트폴리오 사이트에 바로 반영됩니다</p>
+      </div>
+      <div class="admin-top-actions">
+        <a class="btn btn-ghost" href="index.html" target="_blank" rel="noopener">사이트 보기</a>
+        <button type="button" class="btn btn-ghost" id="logoutBtn">로그아웃</button>
+      </div>
+    </header>
+
+    <div class="admin-body">
+
+      <!-- ---- 왼쪽: 프로젝트 목록 ---- -->
+      <aside class="admin-list">
+        <div class="list-head">
+          <h2>프로젝트</h2>
+          <button type="button" class="btn btn-primary btn-sm" id="newBtn">+ 새 프로젝트</button>
+        </div>
+
+        <p class="list-count" id="listCount">불러오는 중…</p>
+        <ul class="project-list" id="projectList"></ul>
+      </aside>
+
+      <!-- ---- 오른쪽: 입력 양식 ---- -->
+      <main class="admin-form-wrap">
+        <form class="admin-form" id="projectForm" autocomplete="off" novalidate>
+
+          <div class="form-head">
+            <h2 id="formTitle">새 프로젝트</h2>
+            <p class="form-sub" id="formSub">칸을 채우고 아래에서 초안 또는 공개를 고르세요</p>
+          </div>
+
+          <!-- 공개 상태 -->
+          <fieldset class="status-box">
+            <legend>공개 상태</legend>
+            <label class="status-option">
+              <input type="radio" name="status" value="draft" checked />
+              <span>
+                <strong>초안</strong>
+                <small>빈칸이 있어도 저장됩니다. 방문자에게는 보이지 않습니다.</small>
+              </span>
+            </label>
+            <label class="status-option">
+              <input type="radio" name="status" value="published" />
+              <span>
+                <strong>공개</strong>
+                <small>참고사항·링크를 뺀 모든 칸을 채워야 저장됩니다. 사이트에 표시됩니다.</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="form-grid">
+
+            <label class="field field-wide">
+              <span class="field-label">제목 <b class="req">*</b></span>
+              <input type="text" name="title" id="fTitle"
+                placeholder="예: 캠퍼스 에너지 사용 현황 시각화" />
+              <span class="field-error" data-error-for="title"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">분야 <b class="req">*</b></span>
+              <select name="category" id="fCategory">
+                <option value="">분야를 선택하세요</option>
+              </select>
+              <span class="field-error" data-error-for="category"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">날짜 <b class="req">*</b></span>
+              <input type="text" name="date" id="fDate"
+                placeholder="예: 2026.03 또는 2026.03 ~ 2026.06" />
+              <span class="field-error" data-error-for="date"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">내가 한 역할 <b class="req">*</b></span>
+              <input type="text" name="role" id="fRole"
+                placeholder="예: 데이터 수집 및 시각화 담당" />
+              <span class="field-error" data-error-for="role"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">참여인원 수 <b class="req">*</b></span>
+              <input type="number" name="teamSize" id="fTeamSize" min="1" step="1"
+                placeholder="예: 4" />
+              <span class="field-error" data-error-for="teamSize"></span>
+            </label>
+
+            <label class="field field-wide">
+              <span class="field-label">설명 <b class="req">*</b></span>
+              <textarea name="description" id="fDescription" rows="9"
+placeholder="예:
+문제 — 학생들이 캠퍼스 에너지 사용량을 이해하기 어려웠습니다.
+
+접근 — 공공데이터를 정리하고 건물별로 비교할 수 있는 그래프를 만들었습니다.
+
+결과 — 사용량이 많은 건물을 한눈에 확인할 수 있게 되었습니다."></textarea>
+              <span class="field-hint">빈 줄로 나누면 사이트에서 문단으로 표시됩니다. 첫 문단이 카드의 요약글이 됩니다.</span>
+              <span class="field-error" data-error-for="description"></span>
+            </label>
+
+            <label class="field field-wide">
+              <span class="field-label">참고사항 <small class="opt">(선택)</small></span>
+              <input type="text" name="notes" id="fNotes"
+                placeholder="예: 교내 공모전 출품작 / 사용 도구: Python, QGIS" />
+              <span class="field-error" data-error-for="notes"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">링크 주소 <small class="opt">(선택)</small></span>
+              <input type="url" name="linkUrl" id="fLinkUrl"
+                placeholder="예: https://example.com" />
+              <span class="field-error" data-error-for="linkUrl"></span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">링크 이름 <small class="opt">(선택)</small></span>
+              <input type="text" name="linkLabel" id="fLinkLabel"
+                placeholder="예: 프로젝트 사이트 바로가기" />
+              <span class="field-error" data-error-for="linkLabel"></span>
+            </label>
+
+          </div>
+
+          <p class="form-message" id="formMessage" hidden></p>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="saveBtn">저장</button>
+            <button type="button" class="btn btn-ghost" id="cancelBtn">취소</button>
+            <button type="button" class="btn btn-danger" id="deleteBtn" hidden>삭제</button>
+          </div>
+
+        </form>
+      </main>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script type="module" src="js/admin/main.js"></script>
+</body>
+</html>

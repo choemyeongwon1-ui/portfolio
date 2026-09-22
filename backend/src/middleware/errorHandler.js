@@ -25,6 +25,8 @@ export function errorHandler(error, req, res, next) {
     error: {
       code,
       message,
+      // 어느 칸이 잘못됐는지 화면이 표시할 수 있게 함께 보낸다.
+      ...(error.details ? { details: error.details } : {}),
       ...(config.env === 'development' && error.stack ? { stack: error.stack } : {})
     }
   });

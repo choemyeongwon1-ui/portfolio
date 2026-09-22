@@ -28,35 +28,67 @@ export function renderCategories(categories, activeId = 'all') {
   );
 }
 
-function projectCard(project) {
+/** 설명을 빈 줄 기준으로 문단으로 나눈다. */
+function toParagraphs(text) {
+  return String(text ?? '')
+    .split(/\n\s*\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+/** 카드 위쪽에 보여줄 한 줄 요약 (설명의 첫 문단) */
+function leadOf(project) {
+  const [first] = toParagraphs(project.description);
+  return first ?? '';
+}
+
+function projectCard(project, categoryLabel) {
+  const meta = [];
+  if (project.date) meta.push(project.date);
+  if (project.role) meta.push(project.role);
+  if (project.teamSize) meta.push(`참여 ${project.teamSize}명`);
+
+  const detailChildren = toParagraphs(project.description)
+    .slice(1)
+    .map((paragraph) =>
+      el('div', { className: 'detail-item', children: [el('span', { text: paragraph })] })
+    );
+
+  if (project.notes) {
+    detailChildren.push(
+      el('div', {
+        className: 'detail-item',
+        children: [el('strong', { text: '참고사항' }), el('span', { text: project.notes })]
+      })
+    );
+  }
+
   const children = [
     el('div', {
       className: 'proj-card-top',
       children: [
-        el('span', { className: 'proj-tag', text: project.categoryLabel ?? project.category }),
+        el('span', { className: 'proj-tag', text: categoryLabel ?? project.category }),
         el('h3', { text: project.title }),
-        el('p', { text: project.summary })
+        el('p', { text: leadOf(project) })
       ]
     }),
     el('div', {
       className: 'proj-meta',
-      children: (project.keywords ?? []).map((keyword) => el('span', { text: keyword }))
-    }),
-    el('button', {
-      className: 'proj-toggle',
-      text: '자세히 보기',
-      attrs: { type: 'button', 'aria-expanded': 'false' }
-    }),
-    el('div', {
-      className: 'proj-detail',
-      children: (project.details ?? []).map((detail) =>
-        el('div', {
-          className: 'detail-item',
-          children: [el('strong', { text: detail.label }), el('span', { text: detail.body })]
-        })
-      )
+      children: meta.map((value) => el('span', { text: value }))
     })
   ];
+
+  // 펼칠 내용이 있을 때만 버튼을 단다.
+  if (detailChildren.length) {
+    children.push(
+      el('button', {
+        className: 'proj-toggle',
+        text: '자세히 보기',
+        attrs: { type: 'button', 'aria-expanded': 'false' }
+      }),
+      el('div', { className: 'proj-detail', children: detailChildren })
+    );
+  }
 
   if (project.link?.url) {
     children.push(
@@ -79,12 +111,15 @@ function projectCard(project) {
   });
 }
 
-export function renderProjects({ items = [], total = 0 } = {}) {
+export function renderProjects({ items = [], total = 0 } = {}, categories = []) {
   const grid = $('#projGrid');
   const summary = $('#projSummary');
   const empty = $('#projEmpty');
 
-  if (grid) render(grid, items.map(projectCard));
+  // 분야 id(web) → 표시 이름(웹)
+  const labels = new Map(categories.map((category) => [category.id, category.label]));
+
+  if (grid) render(grid, items.map((item) => projectCard(item, labels.get(item.category))));
   if (summary) summary.textContent = `프로젝트 ${total}개`;
   if (empty) empty.hidden = total > 0;
 }

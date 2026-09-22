@@ -7,11 +7,14 @@
 // ==========================================
 
 export class AppError extends Error {
-  constructor(message, { status = 500, code = 'INTERNAL_ERROR', cause } = {}) {
+  constructor(message, { status = 500, code = 'INTERNAL_ERROR', cause, details } = {}) {
     super(message, { cause });
     this.name = 'AppError';
     this.status = status;
     this.code = code;
+    // 어느 칸이 왜 잘못됐는지 화면에 알려줄 때 쓴다.
+    // 예: [{ field: 'title', message: '공개하려면 제목을 입력해야 합니다.' }]
+    this.details = details;
   }
 }
 
@@ -23,8 +26,15 @@ export class NotFoundError extends AppError {
 }
 
 export class BadRequestError extends AppError {
-  constructor(message = '요청 형식이 올바르지 않습니다.') {
-    super(message, { status: 400, code: 'BAD_REQUEST' });
+  constructor(message = '요청 형식이 올바르지 않습니다.', details) {
+    super(message, { status: 400, code: 'BAD_REQUEST', details });
     this.name = 'BadRequestError';
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(message = '로그인이 필요합니다.') {
+    super(message, { status: 401, code: 'UNAUTHORIZED' });
+    this.name = 'UnauthorizedError';
   }
 }

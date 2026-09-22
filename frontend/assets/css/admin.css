@@ -1,0 +1,337 @@
+/* ==========================================
+   관리자 페이지 스타일
+   공개 사이트(style.css)와 색을 맞추되, 화면은 더 단순하게 둔다.
+   ========================================== */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #F5FAE8;
+  --bg-card:   #FDFFF7;
+  --bg-soft:   #EDF4D4;
+
+  --primary:   #6A9A52;
+  --primary-dk:#527a3f;
+
+  --text:      #3a5230;
+  --text-sub:  #6a8a5a;
+  --text-light:#9ab88a;
+
+  --border:    rgba(167,188,154,0.45);
+  --border-dk: rgba(106,154,82,0.55);
+
+  --danger:    #a6503f;
+  --danger-bg: #fbeeea;
+  --draft:     #9a8b52;
+  --draft-bg:  #fbf5dd;
+
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(100,140,80,0.10);
+}
+
+body {
+  font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* ---------- 공통 요소 ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.15rem;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.93rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn-sm { padding: 0.42rem 0.8rem; font-size: 0.85rem; }
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dk); }
+
+.btn-ghost { background: transparent; color: var(--text-sub); border-color: var(--border-dk); }
+.btn-ghost:hover { background: var(--bg-soft); color: var(--text); }
+
+.btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+.btn-danger:hover { background: var(--danger-bg); }
+
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ---------- 로그인 화면 ---------- */
+
+.login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 2.3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.login-box h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+.login-sub { color: var(--text-sub); font-size: 0.92rem; margin-top: -0.7rem; }
+
+.login-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1.5px solid rgba(166,80,63,0.3);
+  border-radius: 9px;
+  padding: 0.62rem 0.8rem;
+  font-size: 0.89rem;
+}
+
+.login-hint { font-size: 0.82rem; color: var(--text-light); line-height: 1.55; }
+.login-hint code {
+  background: var(--bg-soft);
+  border-radius: 5px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+}
+
+/* ---------- 관리 화면 뼈대 ---------- */
+
+.admin { min-height: 100vh; display: flex; flex-direction: column; }
+
+.admin-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.3rem 2rem;
+  background: var(--bg-card);
+  border-bottom: 1.5px solid var(--border);
+}
+.admin-top h1 { font-size: 1.22rem; }
+.admin-sub { font-size: 0.87rem; color: var(--text-sub); }
+.admin-top-actions { display: flex; gap: 0.55rem; }
+
+.admin-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem 3rem;
+  align-items: start;
+}
+
+/* ---------- 왼쪽 목록 ---------- */
+
+.admin-list {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+.list-head h2 { font-size: 1rem; }
+
+.list-count { font-size: 0.82rem; color: var(--text-light); margin-bottom: 0.7rem; }
+
+.project-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+
+.project-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  transition: all 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.project-item:hover { border-color: var(--border-dk); background: var(--bg-soft); }
+.project-item.is-active { border-color: var(--primary); background: var(--bg-soft); }
+
+.project-item-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+.project-item-title.is-empty { color: var(--text-light); font-weight: 400; font-style: italic; }
+
+.project-item-meta { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+
+.badge {
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.badge-published { background: rgba(106,154,82,0.15); color: var(--primary-dk); border-color: rgba(106,154,82,0.35); }
+.badge-draft     { background: var(--draft-bg); color: var(--draft); border-color: rgba(154,139,82,0.35); }
+.badge-category  { background: var(--bg-soft); color: var(--text-sub); border-color: var(--border); }
+
+.list-empty { font-size: 0.87rem; color: var(--text-light); padding: 0.8rem 0; }
+
+/* ---------- 오른쪽 입력 양식 ---------- */
+
+.admin-form {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.form-head h2 { font-size: 1.1rem; }
+.form-sub { font-size: 0.86rem; color: var(--text-sub); }
+
+/* 공개 상태 */
+.status-box {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+.status-box legend { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); padding: 0 0.35rem; }
+
+.status-option {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.status-option:hover { border-color: var(--border-dk); }
+.status-option:has(input:checked) { border-color: var(--primary); background: var(--bg-soft); }
+.status-option input { margin-top: 0.28rem; accent-color: var(--primary); }
+.status-option strong { display: block; font-size: 0.92rem; }
+.status-option small { display: block; font-size: 0.79rem; color: var(--text-sub); line-height: 1.45; }
+
+/* 입력칸 */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+.field-wide { grid-column: 1 / -1; }
+
+.field-label { font-size: 0.87rem; font-weight: 700; color: var(--text-sub); }
+.field-label .req { color: var(--danger); font-size: 0.9em; }
+.field-label .opt { font-weight: 400; color: var(--text-light); font-size: 0.85em; }
+
+.field input,
+.field select,
+.field textarea {
+  font-family: inherit;
+  font-size: 0.93rem;
+  color: var(--text);
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 0.62rem 0.75rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  width: 100%;
+}
+.field textarea { resize: vertical; line-height: 1.65; min-height: 8rem; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(106,154,82,0.14);
+}
+
+/* ★ 예제 안내 글씨 — 입력하면 자동으로 사라진다 */
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #b9c9ac;
+  opacity: 1;
+}
+.field select:invalid { color: #b9c9ac; }
+
+.field-hint { font-size: 0.79rem; color: var(--text-light); line-height: 1.5; }
+
+.field-error { font-size: 0.81rem; color: var(--danger); min-height: 0; }
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea { border-color: var(--danger); }
+
+/* 안내 문구 */
+.form-message {
+  border-radius: 9px;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.89rem;
+  border: 1.5px solid transparent;
+}
+.form-message.is-error   { background: var(--danger-bg); color: var(--danger); border-color: rgba(166,80,63,0.3); }
+.form-message.is-success { background: rgba(106,154,82,0.12); color: var(--primary-dk); border-color: rgba(106,154,82,0.35); }
+
+.form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.form-actions .btn-danger { margin-left: auto; }
+
+/* ---------- 토스트 ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.8rem;
+  transform: translate(-50%, 12px);
+  background: var(--text);
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.89rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- 좁은 화면 ---------- */
+
+@media (max-width: 900px) {
+  .admin-body { grid-template-columns: 1fr; padding: 1.1rem; }
+  .admin-list { position: static; }
+  .admin-top { padding: 1.1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .status-box { grid-template-columns: 1fr; }
+  .admin-form { padding: 1.1rem; }
+  .form-actions .btn-danger { margin-left: 0; }
+}

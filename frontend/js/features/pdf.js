@@ -112,41 +112,51 @@ function skillsBlock(skills) {
   return section('학습 역량', grid, tagLine);
 }
 
-function projectsBlock(projects) {
+function projectsBlock(projects, categories = []) {
   if (!projects.length) return null;
+
+  const labels = new Map(categories.map((category) => [category.id, category.label]));
 
   const articles = projects.map((project) => {
     const children = [
       el('div', {
         className: 'pdf-proj-head',
         children: [
-          el('span', { className: 'pdf-badge', text: plain(project.categoryLabel) }),
+          el('span', {
+            className: 'pdf-badge',
+            text: plain(labels.get(project.category) ?? project.category)
+          }),
           el('h3', { text: plain(project.title) })
         ]
-      }),
-      el('p', { className: 'pdf-lead', text: plain(project.summary) })
+      })
     ];
 
-    if (project.keywords?.length) {
-      children.push(
-        el('p', {
-          className: 'pdf-keys',
-          text: `키워드 · ${project.keywords.map(plain).join(' · ')}`
-        })
-      );
+    const meta = [];
+    if (project.date) meta.push(project.date);
+    if (project.role) meta.push(project.role);
+    if (project.teamSize) meta.push(`참여 ${project.teamSize}명`);
+
+    if (meta.length) {
+      children.push(el('p', { className: 'pdf-keys', text: meta.map(plain).join(' · ') }));
     }
+
+    const paragraphs = String(project.description ?? '')
+      .split(/\n\s*\n/)
+      .map((part) => part.trim())
+      .filter(Boolean);
 
     children.push(
       el('div', {
         className: 'pdf-steps',
-        children: (project.details ?? []).map((detail) =>
-          el('div', {
-            className: 'pdf-step',
-            children: [el('b', { text: plain(detail.label) }), el('span', { text: plain(detail.body) })]
-          })
+        children: paragraphs.map((paragraph) =>
+          el('div', { className: 'pdf-step', children: [el('span', { text: plain(paragraph) })] })
         )
       })
     );
+
+    if (project.notes) {
+      children.push(el('p', { className: 'pdf-lead', text: `참고사항 · ${plain(project.notes)}` }));
+    }
 
     if (project.link?.url) {
       children.push(el('p', { className: 'pdf-url', text: `관련 링크 · ${project.link.url}` }));
@@ -189,7 +199,7 @@ export function buildPdfDoc() {
     profileBlock(profile),
     aboutBlock(profile),
     skillsBlock(store.skills),
-    projectsBlock(store.allProjects),
+    projectsBlock(store.allProjects, store.categories),
     closingBlock(profile),
     footBlock(profile, date)
   ]);

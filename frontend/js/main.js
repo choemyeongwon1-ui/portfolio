@@ -27,7 +27,7 @@ function showFatalError(message) {
   const banner = $('#appError');
   if (!banner) return;
 
-  banner.textContent = `${message} (백엔드가 실행 중인지 확인해 주세요: npm run dev)`;
+  banner.textContent = `${message} (터미널에서 npm run dev 를 실행하세요)`;
   banner.hidden = false;
 }
 

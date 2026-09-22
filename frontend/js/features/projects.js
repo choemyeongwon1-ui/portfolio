@@ -40,7 +40,7 @@ async function loadProjects(category) {
     const result = await portfolioApi.getProjects(category);
 
     setState({ currentCategory: category });
-    renderProjects(result);
+    renderProjects(result, store.categories);
     bindDetailToggles();
     observeReveal($('#projGrid') ?? document);
   } catch (error) {
