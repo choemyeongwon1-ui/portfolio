@@ -27,7 +27,15 @@ function showFatalError(message) {
   const banner = $('#appError');
   if (!banner) return;
 
-  banner.textContent = `${message} (터미널에서 npm run dev 를 실행하세요)`;
+  // "npm run dev를 실행하라"는 안내는 로컬(localhost)에서만 뜻이 통한다.
+  // 공개 사이트(github.io)에서는 방문자가 그 말대로 할 수 없으므로
+  // 상황에 맞는 문구를 따로 보여준다.
+  const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const hint = isLocal
+    ? '터미널에서 npm run dev 를 실행하세요.'
+    : '잠시 후 다시 시도해 주세요. 계속되면 알려주세요.';
+
+  banner.textContent = `${message} (${hint})`;
   banner.hidden = false;
 }
 
