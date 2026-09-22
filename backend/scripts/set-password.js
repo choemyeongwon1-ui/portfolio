@@ -44,16 +44,26 @@ function askHidden(question) {
   });
 }
 
+/**
+ * .env에서 key 줄을 새 값으로 바꾼다.
+ * 같은 키가 여러 줄 있으면 모두 지우고 하나만 남긴다.
+ * (줄 단위로 처리한다. 정규식으로 여러 줄을 다루면 실수하기 쉽다)
+ */
 function upsertEnv(contents, key, value) {
-  const line = `${key}=${value}`;
-  const pattern = new RegExp(`^${key}=.*$`, 'm');
+  const lines = contents.split(/\r?\n/);
+  const kept = lines.filter((line) => !line.startsWith(`${key}=`));
+  const hadKey = kept.length !== lines.length;
 
-  if (pattern.test(contents)) {
-    return contents.replace(pattern, line);
+  // 원래 있던 자리에 넣고, 없던 키면 맨 뒤에 붙인다.
+  if (hadKey) {
+    const at = lines.findIndex((line) => line.startsWith(`${key}=`));
+    const before = kept.slice(0, at);
+    const after = kept.slice(at);
+    return [...before, `${key}=${value}`, ...after].join('\n');
   }
 
-  const separator = contents.length && !contents.endsWith('\n') ? '\n' : '';
-  return `${contents}${separator}${line}\n`;
+  while (kept.length && kept.at(-1) === '') kept.pop();
+  return [...kept, `${key}=${value}`, ''].join('\n');
 }
 
 async function main() {
@@ -61,9 +71,16 @@ async function main() {
 
   const password = await askHidden('새 비밀번호: ');
 
-  if (password.length < 8) {
-    console.error('\n비밀번호는 8자 이상이어야 합니다. 취소했습니다.');
+  if (password.length < 4) {
+    console.error('\n비밀번호는 4자 이상이어야 합니다. 취소했습니다.');
     process.exit(1);
+  }
+
+  if (password.length < 8) {
+    console.warn(
+      '\n주의: 8자 미만은 짧습니다. 관리자 페이지를 인터넷에 공개할 예정이라면\n' +
+        '      더 긴 비밀번호를 권합니다. (이대로 진행합니다)'
+    );
   }
 
   const again = await askHidden('한 번 더 입력: ');
@@ -78,7 +95,10 @@ async function main() {
   let next = upsertEnv(current, 'ADMIN_PASSWORD_HASH', hash);
 
   // 평문 설정이 남아 있으면 지운다. 해시가 있으면 쓰이지 않기 때문이다.
-  next = next.replace(/^ADMIN_PASSWORD=.*$\n?/m, '');
+  next = next
+    .split(/\r?\n/)
+    .filter((line) => !line.startsWith('ADMIN_PASSWORD='))
+    .join('\n');
 
   fs.writeFileSync(envPath, next, 'utf-8');
 
