@@ -136,14 +136,70 @@ export function fillForm(project) {
   const radio = $(`[name="status"][value="${status}"]`, form);
   if (radio) radio.checked = true;
 
-  // 제목과 버튼 문구를 상황에 맞게 바꾼다.
+  // 지금 저장되어 있는 상태를 제목 옆에 뱃지로 보여준다.
   const isNew = !project;
+  const badge = $('#savedBadge');
+  if (badge) {
+    badge.hidden = isNew;
+    badge.textContent = status === 'published' ? '공개 중' : '초안 보관 중';
+    badge.className = status === 'published' ? 'badge badge-published' : 'badge badge-draft';
+  }
+
   $('#formTitle').textContent = isNew ? '새 프로젝트' : '프로젝트 수정';
   $('#formSub').textContent = isNew
     ? '칸을 채우고 아래에서 초안 또는 공개를 고르세요'
-    : '내용을 고친 뒤 저장을 누르면 사이트에 반영됩니다';
-  $('#saveBtn').textContent = isNew ? '새로 저장' : '수정 저장';
+    : '내용을 고친 뒤 저장을 누르면 반영됩니다';
   $('#deleteBtn').hidden = isNew;
+
+  // 저장 버튼 문구와 안내를 현재 선택에 맞춘다.
+  syncStatusUi(project);
+}
+
+/**
+ * 고른 상태(초안/공개)에 따라 버튼 문구와 안내 문구를 맞춘다.
+ * 상태를 바꿀 때마다 호출한다.
+ */
+export function syncStatusUi(savedProject) {
+  const form = $('#projectForm');
+  if (!form) return;
+
+  const chosen = $('[name="status"]:checked', form)?.value ?? 'draft';
+  const savedStatus = savedProject?.status ?? null;
+  const isNew = !savedProject;
+
+  // 버튼 문구
+  const saveBtn = $('#saveBtn');
+  if (saveBtn) {
+    saveBtn.textContent =
+      chosen === 'published'
+        ? isNew ? '공개로 저장' : '공개로 저장하기'
+        : isNew ? '초안으로 임시저장' : '초안으로 임시저장';
+  }
+
+  // 안내 문구
+  const notice = $('#statusNotice');
+  if (!notice) return;
+
+  const values = readForm();
+  let message = '';
+
+  if (chosen === 'draft') {
+    const missing = REQUIRED_FOR_PUBLISH.filter(({ name }) => !values[name]);
+
+    if (savedStatus === 'published') {
+      message = '이대로 저장하면 사이트에서 내려가고, 방문자에게 보이지 않게 됩니다.';
+    } else if (missing.length) {
+      const labels = missing.map((item) => item.label).join(', ');
+      message = `지금 저장하면 쓴 내용이 그대로 보관됩니다. 공개하려면 ${withJosa(labels)} 더 채워야 합니다.`;
+    } else {
+      message = '모든 칸이 채워져 있습니다. 공개로 바꿔 저장하면 바로 사이트에 표시됩니다.';
+    }
+  } else if (savedStatus === 'draft') {
+    message = '이대로 저장하면 사이트에 공개됩니다.';
+  }
+
+  notice.textContent = message;
+  notice.hidden = !message;
 }
 
 /**

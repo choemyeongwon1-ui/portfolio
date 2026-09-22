@@ -18,26 +18,31 @@ import {
   showFieldErrors,
   clearErrors,
   showFormMessage,
-  hideFormMessage
+  hideFormMessage,
+  syncStatusUi
 } from './form.js';
 
 const state = {
   projects: [],
   categories: [],
-  selectedId: null
+  selectedId: null,
+  // 지금 양식에 올려둔 프로젝트의 "저장된" 모습.
+  // 상태를 바꿀 때 "사이트에서 내려갑니다" 같은 안내를 하려면 필요하다.
+  selected: null
 };
 
 /** 지금 고른 프로젝트를 양식에 표시한다. */
 function selectProject(id) {
   state.selectedId = id;
+  state.selected = state.projects.find((item) => item.id === id) ?? null;
 
-  const project = state.projects.find((item) => item.id === id) ?? null;
-  fillForm(project);
+  fillForm(state.selected);
   renderList(state.projects, state.categories, state.selectedId, selectProject);
 }
 
 function startNewProject() {
   state.selectedId = null;
+  state.selected = null;
   fillForm(null);
   renderList(state.projects, state.categories, null, selectProject);
   $('#fTitle')?.focus();
@@ -87,6 +92,7 @@ async function handleSave(event) {
       : await adminApi.createProject(values);
 
     state.selectedId = saved.id;
+    state.selected = saved;
     await loadProjects();
     fillForm(saved);
     renderList(state.projects, state.categories, state.selectedId, selectProject);
@@ -94,10 +100,10 @@ async function handleSave(event) {
     showFormMessage(
       saved.status === 'published'
         ? '저장했습니다. 사이트에 공개되었습니다.'
-        : '초안으로 저장했습니다. 사이트에는 보이지 않습니다.',
+        : '초안으로 임시저장했습니다. 방문자에게는 보이지 않으며, 다음에 들어와도 이 내용 그대로 남아 있습니다.',
       'success'
     );
-    showToast('저장되었습니다');
+    showToast(saved.status === 'published' ? '공개되었습니다' : '임시저장되었습니다');
   } catch (error) {
     if (handleAuthError(error)) return;
 
@@ -123,6 +129,7 @@ async function handleDelete() {
   try {
     await adminApi.deleteProject(state.selectedId);
     state.selectedId = null;
+    state.selected = null;
     await loadProjects();
     fillForm(null);
     showToast('삭제되었습니다');
@@ -164,11 +171,17 @@ function bindActions() {
     showToast('로그아웃되었습니다');
   });
 
-  // 공개를 고르면 어떤 칸이 필요한지 미리 알려준다.
+  // 초안/공개를 바꾸면 버튼 문구와 안내를 즉시 맞춘다.
   $('#projectForm')?.addEventListener('change', (event) => {
     if (event.target.name !== 'status') return;
     hideFormMessage();
     clearErrors();
+    syncStatusUi(state.selected);
+  });
+
+  // 칸을 채우는 동안 "무엇이 더 필요한지" 안내를 갱신한다.
+  $('#projectForm')?.addEventListener('input', () => {
+    syncStatusUi(state.selected);
   });
 }
 

@@ -14,7 +14,12 @@
 
   <!-- ================= 로그인 화면 ================= -->
   <div class="login-screen" id="loginScreen">
-    <form class="login-box" id="loginForm" autocomplete="off">
+    <!--
+      onsubmit="return false" 는 안전장치다.
+      자바스크립트가 어떤 이유로든 실행되지 않으면 이 폼이 그대로 전송되는데,
+      그러면 비밀번호가 주소창(그리고 방문 기록)에 남는다. 그것을 막는다.
+    -->
+    <form class="login-box" id="loginForm" autocomplete="off" onsubmit="return false">
       <h1>프로젝트 관리</h1>
       <p class="login-sub">관리자 비밀번호를 입력하세요</p>
 
@@ -68,30 +73,39 @@
 
       <!-- ---- 오른쪽: 입력 양식 ---- -->
       <main class="admin-form-wrap">
-        <form class="admin-form" id="projectForm" autocomplete="off" novalidate>
+        <form class="admin-form" id="projectForm" autocomplete="off" novalidate onsubmit="return false">
 
           <div class="form-head">
-            <h2 id="formTitle">새 프로젝트</h2>
+            <div class="form-head-row">
+              <h2 id="formTitle">새 프로젝트</h2>
+              <!-- 지금 저장되어 있는 상태 -->
+              <span class="badge badge-draft" id="savedBadge" hidden></span>
+            </div>
             <p class="form-sub" id="formSub">칸을 채우고 아래에서 초안 또는 공개를 고르세요</p>
           </div>
 
           <!-- 공개 상태 -->
           <fieldset class="status-box">
-            <legend>공개 상태</legend>
-            <label class="status-option">
+            <legend>이 프로젝트를 어떻게 저장할까요?</legend>
+
+            <label class="status-option" data-status="draft">
               <input type="radio" name="status" value="draft" checked />
-              <span>
-                <strong>초안</strong>
-                <small>빈칸이 있어도 저장됩니다. 방문자에게는 보이지 않습니다.</small>
+              <span class="status-text">
+                <strong><span class="status-mark" aria-hidden="true">✎</span> 초안으로 저장</strong>
+                <small>쓰다 만 상태로 보관합니다. 빈칸이 있어도 저장되고, 방문자에게는 보이지 않습니다.</small>
               </span>
             </label>
-            <label class="status-option">
+
+            <label class="status-option" data-status="published">
               <input type="radio" name="status" value="published" />
-              <span>
-                <strong>공개</strong>
-                <small>참고사항·링크를 뺀 모든 칸을 채워야 저장됩니다. 사이트에 표시됩니다.</small>
+              <span class="status-text">
+                <strong><span class="status-mark" aria-hidden="true">◉</span> 공개로 저장</strong>
+                <small>사이트에 바로 표시됩니다. 참고사항·링크를 뺀 모든 칸을 채워야 합니다.</small>
               </span>
             </label>
+
+            <!-- 상태를 바꿀 때 나오는 안내 -->
+            <p class="status-notice" id="statusNotice" hidden></p>
           </fieldset>
 
           <div class="form-grid">
