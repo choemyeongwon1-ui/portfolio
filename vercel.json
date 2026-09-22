@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
 
-  "buildCommand": "rm -rf .vercel-static && cp -r frontend .vercel-static && rm -f .vercel-static/admin.html .vercel-static/assets/css/admin.css && rm -rf .vercel-static/js/admin && rm -f .vercel-static/js/api/admin.api.js .vercel-static/js/lib/duplicate.js .vercel-static/js/lib/josa.js",
+  "buildCommand": "node vercel-build.mjs",
   "outputDirectory": ".vercel-static"
 }
