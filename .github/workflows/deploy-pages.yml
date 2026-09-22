@@ -1,0 +1,73 @@
+# ==========================================
+# GitHub Pages 배포
+# ------------------------------------------
+# frontend/ 폴더만 골라서 Pages에 올린다.
+#
+# ★ 관리자 페이지(admin.html)는 올리지 않는다.
+#   Pages는 정적 파일만 서비스하고 서버(백엔드)를 돌릴 수 없어서,
+#   관리자 기능(로그인·저장)은 여기서 절대 동작하지 않는다.
+#   동작하지 않는 로그인 화면을 공개해 둘 이유가 없으므로 아예 뺀다.
+#   관리자 페이지는 지금처럼 내 컴퓨터(npm run dev)에서만 쓴다.
+#
+# 흐름: 관리자 페이지에서 프로젝트 저장 → git commit/push
+#      → 이 워크플로가 자동으로 실행 → 공개 사이트에 반영
+# ==========================================
+
+name: GitHub Pages 배포
+
+on:
+  push:
+    branches:
+      - refactor/split-frontend-backend
+  # 코드 변경 없이 수동으로 다시 배포하고 싶을 때
+  workflow_dispatch:
+
+# Pages에 글을 쓸 수 있는 권한만 허용한다.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포가 겹치지 않게 한다. 새 배포가 오면 진행 중이던 것은 그만둔다.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 내려받기
+        uses: actions/checkout@v4
+
+      - name: 공개용 폴더 준비 (admin 관련 파일 제외)
+        run: |
+          mkdir -p public
+          cp -r frontend/. public/
+
+          # 관리자 페이지와 그 전용 코드는 공개 사이트에 올리지 않는다.
+          rm -f public/admin.html
+          rm -f public/assets/css/admin.css
+          rm -rf public/js/admin
+          rm -f public/js/api/admin.api.js
+          rm -f public/js/lib/duplicate.js
+          rm -f public/js/lib/josa.js
+
+      - name: Pages 설정
+        uses: actions/configure-pages@v5
+
+      - name: 결과물 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pages에 배포
+        id: deployment
+        uses: actions/deploy-pages@v4

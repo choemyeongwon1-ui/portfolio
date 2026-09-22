@@ -49,7 +49,17 @@ export const config = {
     // 해시가 없을 때만 쓰는 임시 방편. 평문이므로 개발 중에만 사용한다.
     passwordPlain: process.env.ADMIN_PASSWORD || '',
     // 로그인 유지 시간 (분)
-    sessionTtlMs: (Number(process.env.ADMIN_SESSION_MINUTES) || 120) * 60 * 1000
+    sessionTtlMs: (Number(process.env.ADMIN_SESSION_MINUTES) || 120) * 60 * 1000,
+
+    // 관리자 기능(로그인·글쓰기)을 이 서버에서 켤지 말지.
+    // 기본은 켜짐(로컬 개발용). 공개 배포판(Vercel)에서는 ENABLE_ADMIN=false 로 끈다.
+    //
+    // 왜 끄는가: 여기서 쓰는 저장 방식은 파일에 직접 쓰는 방식이라,
+    // 서버가 요청마다 새로 뜨는 서버리스 환경(Vercel)에서는 "저장했다"고 나와도
+    // 그 내용이 유지된다는 보장이 없다. 로그인 유지 상태도 마찬가지다.
+    // 그래서 실제 글쓰기·수정은 내 컴퓨터(npm run dev)에서만 하고,
+    // 저장한 내용을 git으로 올리면 공개 사이트에는 그 커밋 기준으로 반영되는 방식을 쓴다.
+    enabled: toBool(process.env.ENABLE_ADMIN, true)
   },
 
   // 프론트엔드에서 API를 호출할 수 있게 허용할 주소 목록.

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "최명원 포트폴리오 — 프론트엔드/백엔드 분리 구조",
   "private": true,
+  "type": "module",
   "workspaces": [
     "backend",
     "frontend"

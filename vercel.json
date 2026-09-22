@@ -1,0 +1,23 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "backend/src/data/**"
+      }
+    }
+  ],
+
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" }
+  ],
+
+  "env": {
+    "SERVE_FRONTEND": "false",
+    "ENABLE_ADMIN": "false",
+    "DATA_SOURCE": "json"
+  }
+}

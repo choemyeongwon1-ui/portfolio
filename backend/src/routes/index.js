@@ -36,6 +36,10 @@ router.use('/skills', skillsRoutes);
 router.use('/projects', projectsRoutes);
 
 // 관리자 전용. 로그인을 지나야 프로젝트를 고칠 수 있다.
-router.use('/admin', adminRoutes);
+// ENABLE_ADMIN=false 인 서버(공개 배포판)에서는 이 경로 자체가 없다 —
+// 막아서 401을 주는 게 아니라, 라우트를 아예 등록하지 않아 404가 된다.
+if (config.admin.enabled) {
+  router.use('/admin', adminRoutes);
+}
 
 export default router;

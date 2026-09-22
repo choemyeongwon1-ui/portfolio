@@ -312,3 +312,17 @@ portfolio-site/
 - 화면과 디자인, CSS 변수, 클래스 이름, 반응형 배치
 - 필터·상세 보기·공유·PDF의 동작과 문구
 - 5절·6절·12절의 동작 명세와 완료 기준
+
+---
+
+## 15. 배포 구조 (2026-09-22)
+
+- 화면: GitHub Pages (`choemyeongwon1-ui.github.io/portfolio/`), `frontend/` 를
+  `.github/workflows/deploy-pages.yml` 이 자동 배포. **admin.html 은 배포에서 제외.**
+- 데이터: Vercel (`api/index.js` → `backend/src/app.js` 그대로 내보냄), `vercel.json` 이
+  `ENABLE_ADMIN=false` · `SERVE_FRONTEND=false` 를 강제.
+- 관리자 페이지는 로컬(`npm run dev`)에서만 쓴다. 저장 → git 커밋/푸시 → 두 배포가 자동으로
+  뒤따라와 공개 사이트에 반영되는 흐름. 이유와 절차는 `README.md`의
+  "실제 공개 배포 구조" 절 참고.
+- Vercel 프로젝트 연결·Deployment Protection 해제는 대시보드에서 사람이 직접 해야 하는
+  단계라 README에 별도로 남겨 둠 — 코드만으로는 끝나지 않는다.
