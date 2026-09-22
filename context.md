@@ -315,14 +315,26 @@ portfolio-site/
 
 ---
 
-## 15. 배포 구조 (2026-09-22)
+## 15. 배포 구조
 
-- 화면: GitHub Pages (`choemyeongwon1-ui.github.io/portfolio/`), `frontend/` 를
-  `.github/workflows/deploy-pages.yml` 이 자동 배포. **admin.html 은 배포에서 제외.**
-- 데이터: Vercel (`api/index.js` → `backend/src/app.js` 그대로 내보냄), `vercel.json` 이
-  `ENABLE_ADMIN=false` · `SERVE_FRONTEND=false` 를 강제.
-- 관리자 페이지는 로컬(`npm run dev`)에서만 쓴다. 저장 → git 커밋/푸시 → 두 배포가 자동으로
-  뒤따라와 공개 사이트에 반영되는 흐름. 이유와 절차는 `README.md`의
-  "실제 공개 배포 구조" 절 참고.
-- Vercel 프로젝트 연결·Deployment Protection 해제는 대시보드에서 사람이 직접 해야 하는
-  단계라 README에 별도로 남겨 둠 — 코드만으로는 끝나지 않는다.
+### 2026-09-22 최초 구성
+- 화면: GitHub Pages, 데이터: Vercel 서버리스 함수(`api/index.js`).
+- Vercel의 Deployment Protection이 켜져 있어 API가 전부 로그인 화면으로 리다이렉트됨을
+  배포 후 실사용 확인 과정에서 발견 — 사용자가 "카드가 안 보인다"고 보고.
+
+### 2026-09-22 변경 — Render로 백엔드 이전
+사용자 요청("백엔드는 Render, 배포는 Vercel 위주로")에 따라 재구성.
+
+- 데이터: **Render** (`render.yaml` Blueprint) — `backend/` 를 서버리스가 아니라 계속 켜진
+  일반 Node 서버로 그대로 띄움. `backend/src/server.js` 무수정.
+- 화면: **Vercel**(`vercel.json` 의 buildCommand로 `frontend/` 복사 후 admin 파일 제외해 정적
+  배포) **과 GitHub Pages 둘 다 유지** — 어느 쪽 링크를 써도 같은 내용이 뜨도록.
+- `api/index.js`(Vercel 서버리스 진입점)는 제거함 — Render가 API를 전담하므로 불필요.
+- `frontend/js/config.js` 의 `PRODUCTION_API_BASE` 를 Render 주소로 변경.
+- Render 무료 플랜은 15분 무요청 시 슬립 → 재깨움에 최대 1분 소요. 이를 감안해
+  `requestTimeout` 을 로컬 8초 / 배포 45초로 분리하고, 타임아웃 안내 문구도
+  "서버를 깨우는 중일 수 있습니다"로 맞춤.
+- 관리자 페이지는 여전히 로컬 전용(`ENABLE_ADMIN=false` on Render) — Render 무료 플랜도
+  파일 저장이 영구적이지 않으므로(슬립·재배포 시 초기화) 이유가 동일하게 적용됨.
+- Render·Vercel 양쪽 모두 대시보드에서 사람이 직접 연결해야 하는 단계가 남아 있음
+  (계정 가입, Deployment Protection 해제 등) — 절차는 `README.md` "처음 연결할 때" 참고.

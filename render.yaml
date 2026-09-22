@@ -1,0 +1,44 @@
+# ==========================================
+# Render 배포 설정 (Blueprint)
+# ------------------------------------------
+# Render 대시보드에서 "New +" → "Blueprint" → 이 저장소를 고르면,
+# 이 파일을 읽어서 아래 설정 그대로 서버를 만들어 준다.
+# 무료 플랜(free)이라 카드 등록 없이 쓸 수 있다.
+#
+# ★ 딱 하나, ADMIN_PASSWORD_HASH 만 Render 화면에서 직접 입력해야 한다.
+#   (sync: false 로 되어 있어서, 이 파일에 값이 없어도 Render가 알아서
+#    "값을 입력하세요" 라고 물어본다 — 비밀번호를 파일에 적지 않기 위해서다)
+#
+# 무료 플랜 참고: 15분 동안 요청이 없으면 서버가 잠들고, 다음 요청이
+# 오면 다시 깨어나는 데 30초~1분 정도 걸린다. 방문자가 뜸한 개인
+# 포트폴리오에는 문제없지만, 처음 접속이 조금 느릴 수 있다는 뜻이다.
+# ==========================================
+
+services:
+  - type: web
+    name: portfolio-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: "production"
+      - key: DATA_SOURCE
+        value: "json"
+      - key: SERVE_FRONTEND
+        value: "false"
+      # Render 무료 플랜은 파일 저장이 영구적이지 않다(잠들었다 깨면 초기화).
+      # 그래서 여기서도 관리자 글쓰기는 꺼 둔다 — 이유는 README 참고.
+      # 관리자 페이지는 지금처럼 내 컴퓨터(npm run dev)에서만 쓴다.
+      - key: ENABLE_ADMIN
+        value: "false"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: ADMIN_SESSION_MINUTES
+        value: "120"
+      # 비밀번호 해시는 여기 적지 않는다. Render가 만들 때 직접 물어본다.
+      - key: ADMIN_PASSWORD_HASH
+        sync: false

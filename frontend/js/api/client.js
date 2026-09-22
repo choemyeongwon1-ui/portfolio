@@ -61,9 +61,13 @@ export async function apiGet(pathname, query) {
     if (error instanceof ApiError) throw error;
 
     if (error.name === 'AbortError') {
-      throw new ApiError('서버 응답이 너무 늦습니다. 잠시 후 다시 시도해 주세요.', {
-        code: 'TIMEOUT'
-      });
+      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+      throw new ApiError(
+        isLocal
+          ? '서버 응답이 너무 늦습니다. 잠시 후 다시 시도해 주세요.'
+          : '서버를 깨우는 중일 수 있습니다(무료 서버는 잠시 쉬었다 깨어납니다). 잠시 후 새로고침해 주세요.',
+        { code: 'TIMEOUT' }
+      );
     }
 
     throw new ApiError('서버에 연결하지 못했습니다. 백엔드가 실행 중인지 확인해 주세요.', {

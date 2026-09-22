@@ -133,73 +133,93 @@ portfolio-site/
 
 ---
 
-## 실제 공개 배포 구조 (GitHub Pages + Vercel)
+## 실제 공개 배포 구조 (Vercel + Render, GitHub Pages도 함께)
 
-지금 이 저장소는 화면과 서버를 서로 다른 곳에 나눠 올립니다.
+화면과 서버를 서로 다른 무료 서비스에 나눠 올립니다. 화면은 두 곳(Vercel, GitHub Pages)
+어디서 봐도 같은 내용이 나오고, 둘 다 같은 백엔드(Render)를 바라봅니다.
 
 ```
-choemyeongwon1-ui.github.io/portfolio/   ← 화면 (GitHub Pages, 정적 파일)
-        │  fetch('/api/...')
-        ▼
-portfolio-choemyeongwon1-ui.vercel.app   ← 데이터 (Vercel, 서버리스 함수)
+portfolio-<...>.vercel.app          ┐
+                                     ├─ fetch('/api/...') ─▶  portfolio-backend.onrender.com
+choemyeongwon1-ui.github.io/portfolio/  ┘                     (Render, 항상 켜진 서버)
+      화면 (정적 파일, 둘 다 같은 내용)                              데이터 (API)
 ```
 
-### 화면 — GitHub Pages
+### 화면 — Vercel과 GitHub Pages
 
-`.github/workflows/deploy-pages.yml` 가 `refactor/split-frontend-backend` 브랜치에 푸시될 때마다
-`frontend/` 를 그대로 복사해 Pages에 올립니다. **관리자 페이지(`admin.html`)는 이 과정에서 빼고 올립니다.**
-Pages는 정적 파일만 서비스할 수 있어서 관리자 기능(로그인·저장)이 거기서는 애초에 동작할 수 없고,
+둘 다 `frontend/` 를 그대로 정적으로 올리되, **관리자 페이지(`admin.html`)는 둘 다 빼고 올립니다.**
+정적 호스팅은 서버를 못 돌리므로 관리자 기능(로그인·저장)이 애초에 동작할 수 없고,
 동작하지 않는 로그인 화면을 공개해 둘 이유가 없기 때문입니다.
 
-`frontend/js/config.js` 의 `PRODUCTION_API_BASE` 가 Vercel 주소를 가리킵니다.
-`localhost`가 아닌 곳(= github.io)에서 열리면 자동으로 이 주소로 API를 부릅니다.
+| | 방식 |
+|---|---|
+| Vercel | `vercel.json` 의 `buildCommand` 가 `frontend/` 를 복사하며 admin 관련 파일만 뺀다. GitHub에 푸시할 때마다 Vercel이 자동으로 다시 빌드한다(이미 연결되어 있음). |
+| GitHub Pages | `.github/workflows/deploy-pages.yml` 이 같은 일을 하는 워크플로다. `refactor/split-frontend-backend` 브랜치에 푸시될 때마다 실행된다. |
 
-### 데이터 — Vercel
+`frontend/js/config.js` 의 `PRODUCTION_API_BASE` 가 Render 주소를 가리킵니다.
+`localhost`가 아닌 곳(Vercel이든 Pages든)에서 열리면 자동으로 이 주소로 API를 부릅니다.
 
-`api/index.js` 가 서버리스 진입점입니다. `backend/src/app.js` 의 Express 앱을 그대로 내보내기만 합니다.
-`vercel.json` 이 `/api/*` 요청을 전부 이 함수로 보내고, 다음 환경변수를 강제로 켭니다.
+### 데이터 — Render
+
+`render.yaml` 이 Render의 "Blueprint" 설정입니다. `backend/` 폴더를 그대로 `npm install` →
+`npm start` 로 띄웁니다 — 서버리스가 아니라 **계속 켜져 있는 진짜 서버**라서, `backend/src/server.js`
+를 고칠 필요가 전혀 없습니다. 다음 환경변수를 이 파일이 미리 정해 둡니다.
 
 | 변수 | 값 | 이유 |
 |---|---|---|
-| `SERVE_FRONTEND` | `false` | 화면은 Pages가 담당하므로 Vercel은 API만 |
+| `SERVE_FRONTEND` | `false` | 화면은 Vercel/Pages가 담당하므로 Render는 API만 |
 | `ENABLE_ADMIN` | `false` | 아래 참고 |
 | `DATA_SOURCE` | `json` | `backend/src/data/*.json` 을 그대로 읽음 |
+| `ADMIN_PASSWORD_HASH` | (직접 입력) | 비밀 값이라 파일에 적지 않음. Render가 만들 때 물어본다 |
+
+> ⚠️ Render 무료 플랜은 15분 동안 요청이 없으면 서버가 잠들고, 다음 요청이 오면 다시
+> 깨우는 데 최대 1분 가까이 걸립니다. `frontend/js/config.js` 의 요청 제한시간을 이를
+> 감안해 넉넉히 잡아 뒀습니다 — 방문이 뜸한 개인 포트폴리오에는 무리 없지만,
+> "잠깐 접속이 안 되나?" 싶은 첫 로딩이 생길 수 있다는 뜻입니다.
 
 ### 관리자 페이지는 왜 로컬에서만 쓰는가
 
-이 저장소의 저장 방식은 **파일에 직접 쓰는 방식**입니다. 요청이 올 때마다 새로 뜨는
-서버리스 환경(Vercel)에서는 "저장했다"고 나와도 그 내용이 계속 남아 있다는 보장이 없고,
-로그인 유지 상태도 마찬가지로 불안정합니다. 그래서 실제 글쓰기는 내 컴퓨터
+이 저장소의 저장 방식은 **파일에 직접 쓰는 방식**입니다. Render 무료 플랜의 파일 저장은
+서버가 잠들었다 깨면(또는 다시 배포하면) 초기화되므로, 배포된 서버에서 저장한 내용이
+계속 남아 있다는 보장이 없습니다. 그래서 실제 글쓰기는 내 컴퓨터
 (`npm run dev` → `localhost:4000/admin.html`)에서만 하고, 저장한 내용을 git에 커밋·푸시하면
-GitHub Actions가 화면을 다시 배포하고 Vercel이 API를 다시 배포하면서 공개 사이트에 반영됩니다.
+Vercel·Pages가 화면을, Render가 API를 각각 다시 배포하면서 공개 사이트에 반영됩니다.
 
 ```
 관리자 페이지에서 저장 (로컬)
         ↓
 git commit + push
         ↓
-GitHub Actions → Pages 재배포        Vercel → API 재배포
-        ↓                                   ↓
-   공개 사이트에 새 내용 반영
+Vercel + Pages → 화면 재배포        Render → API 재배포
+        ↓                                  ↓
+       공개 사이트에 새 내용 반영
 ```
 
 파일 업로드를 계속 해야 하는 불편함은 없어졌지만, "어디서나 편집"이 아니라
-"내 컴퓨터에서 편집 → 자동으로 공개"인 구조입니다. 나중에 데이터베이스를 붙이면
-(위 "나중에 DB를 붙이는 방법" 참고) 관리자 페이지도 Vercel에서 그대로 켤 수 있습니다.
+"내 컴퓨터에서 편집 → 자동으로 공개"인 구조입니다. 나중에 진짜 데이터베이스를 붙이면
+(위 "나중에 DB를 붙이는 방법" 참고) 관리자 페이지도 배포된 서버에서 그대로 켤 수 있습니다.
 
 ### 처음 연결할 때 (한 번만)
 
-아래 두 가지는 Vercel 대시보드에서 직접 해야 합니다 — 이 저장소의 코드만으로는 할 수 없습니다.
+아래는 각 서비스 대시보드에서 직접 해야 합니다 — 이 저장소의 코드만으로는 할 수 없습니다.
 
-1. **Vercel 프로젝트를 이 GitHub 저장소에 연결** (Import Git Repository) — Root Directory는
-   저장소 루트 그대로 둡니다 (`vercel.json` 이 알아서 `api/index.js` 만 빌드합니다).
-2. **Deployment Protection을 끕니다** — Project → Settings → Deployment Protection.
-   켜져 있으면 API 응답 대신 Vercel 로그인 화면이 나옵니다.
-3. (선택) **Production Branch를 `refactor/split-frontend-backend` 로 지정**하거나,
-   준비되면 `main` 에 병합합니다.
+**Render (백엔드)**
+1. [render.com](https://render.com) 가입 (카드 등록 없이 무료로 가능) → **New + → Blueprint**
+2. 이 GitHub 저장소 선택 → Render가 `render.yaml` 을 읽어 자동으로 설정을 채운다
+3. `ADMIN_PASSWORD_HASH` 칸에 값을 입력하라고 물어본다 — 내 컴퓨터의 `backend/.env` 에서
+   `ADMIN_PASSWORD_HASH=` 뒤의 값을 그대로 복사해 붙여넣는다 (비밀번호 원문이 아니라 해시값)
+4. Create — 몇 분 뒤 `https://portfolio-backend.onrender.com` 같은 주소가 생긴다
 
-연결한 뒤 Vercel이 배포한 실제 주소가 `frontend/js/config.js` 의 `PRODUCTION_API_BASE` 와
-다르면, 그 한 줄만 실제 주소로 고치면 됩니다.
+**Vercel (화면)**
+1. 이미 이 GitHub 저장소에 연결되어 있다면 그대로 둔다 (`vercel.json` 을 자동으로 읽는다)
+2. 처음 연결하는 경우: Vercel → **Add New → Project** → 이 저장소 선택 →
+   Framework Preset은 **Other**, Root Directory는 저장소 루트 그대로
+3. **Deployment Protection을 끈다** — Project → Settings → Deployment Protection.
+   켜져 있으면 화면 대신 Vercel 로그인 페이지가 나온다
+4. Production Branch를 `refactor/split-frontend-backend` 로 지정하거나, 준비되면 `main` 에 병합한다
+
+**둘 다 연결한 뒤**, Render가 실제로 배정한 주소가 `frontend/js/config.js` 의
+`PRODUCTION_API_BASE` 와 다르면, 그 한 줄만 실제 주소로 고치면 됩니다.
 
 ---
 
