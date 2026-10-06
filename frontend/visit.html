@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/visit.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -24,14 +25,7 @@
     <section class="visit-card">
       <h2>주소</h2>
       <p class="visit-address">상명대학교 천안 (상명대길 31) 상록관</p>
-      <div class="visit-map">
-        <iframe
-          title="상명대학교 천안캠퍼스 상록관 지도"
-          src="https://www.google.com/maps?q=%EC%83%81%EB%AA%85%EB%8C%80%ED%95%99%EA%B5%90%20%EC%B2%9C%EC%95%88%EC%BA%A0%ED%8D%BC%EC%8A%A4%20%EC%83%81%EB%A1%9D%EA%B4%80&output=embed"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
+      <div class="visit-map" id="map" role="img" aria-label="상명대학교 천안캠퍼스 상록관 지도"></div>
     </section>
 
     <section class="visit-card">
@@ -42,12 +36,13 @@
     </section>
 
     <p class="visit-credit">
-      지도 제공: Google Maps · 날씨 제공: Open-Meteo
+      지도 제공: OpenStreetMap · CARTO · 날씨 제공: Open-Meteo
     </p>
 
     <a class="visit-reserve-btn" href="reserve.html">방문 예약하기</a>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/visit.js"></script>
 </body>
 </html>
