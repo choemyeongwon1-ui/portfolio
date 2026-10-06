@@ -226,6 +226,11 @@
   backdrop-filter: blur(4px);
   padding: 20px;
 }
+/* .confirm-overlay{display:flex}는 명시도가 같아도 작성자 스타일이라
+   브라우저 기본 [hidden]{display:none}보다 항상 이긴다 — hidden 속성일 때 강제로 숨긴다. */
+.confirm-overlay[hidden] {
+  display: none;
+}
 
 .confirm-modal {
   width: 100%;
