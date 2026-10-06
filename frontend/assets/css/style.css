@@ -955,10 +955,39 @@ body {
    스크롤 리빌
    ========================================== */
 .reveal {
-  opacity: 0; transform: translateY(28px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-up    { transform: translateY(32px); }
+.reveal-left  { transform: translateX(-80px); }
+.reveal-right { transform: translateX(80px); }
+.reveal-scale { transform: scale(0.82); }
+
+.reveal.visible { opacity: 1; transform: none; }
+
+@media (max-width: 600px) {
+  .reveal-left  { transform: translateX(-36px); }
+  .reveal-right { transform: translateX(36px); }
+}
+
+/* 히어로 등장 — 글이 채워진 뒤 양옆에서 날아온다 */
+.hero-content,
+.hero-card-wrap {
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-content   { transform: translateX(-70px); }
+.hero-card-wrap { transform: translateX(70px); }
+
+body.hero-in .hero-content,
+body.hero-in .hero-card-wrap {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .hero-content, .hero-card-wrap { transform: translateY(32px); }
+}
 
 /* ==========================================
    반응형

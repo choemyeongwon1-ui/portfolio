@@ -18,7 +18,7 @@ import { renderProfile } from './render/profile.render.js';
 import { renderSkills } from './render/skills.render.js';
 
 import { initNavbar } from './features/navbar.js';
-import { observeReveal, bindTagHover, initPageFade } from './features/reveal.js';
+import { observeReveal, bindTagHover, initPageFade, initHeroEntrance } from './features/reveal.js';
 import { initProjects } from './features/projects.js';
 import { initShare } from './features/share.js';
 import { initPdf, printPdf } from './features/pdf.js';
@@ -93,6 +93,7 @@ async function start() {
 
   renderProfile(store.profile);
   renderSkills(store.skills);
+  initHeroEntrance();
   await initProjects();
 
   // 화면이 다 그려진 뒤에 등장 효과를 건다.
