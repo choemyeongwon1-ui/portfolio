@@ -184,6 +184,19 @@ body {
 .nav-link:hover { color: var(--primary); }
 .nav-link:hover::after { width: 100%; }
 
+.nav-link-cta {
+  background: var(--primary);
+  color: white !important;
+  padding: 7px 16px;
+  border-radius: 50px;
+  box-shadow: 0 3px 14px rgba(106,154,82,0.35);
+}
+.nav-link-cta::after { display: none; }
+.nav-link-cta:hover {
+  background: var(--primary-dk);
+  transform: translateY(-2px);
+}
+
 .nav-toggle {
   display: none; flex-direction: column; gap: 5px;
   background: none; border: none; cursor: pointer; padding: 4px;
@@ -294,6 +307,12 @@ body {
   background: var(--kiwi);
   transform: translateY(-3px);
   border-color: var(--matcha);
+}
+
+.contact-visit-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.4rem;
 }
 
 /* ==========================================
