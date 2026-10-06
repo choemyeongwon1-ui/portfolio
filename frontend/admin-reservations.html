@@ -10,7 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
-<body data-api-base="/api">
+<!--
+  data-api-base를 항상 Render(운영 서버) 주소로 고정해 둔다.
+  방문 예약은 방문자가 실시간으로 보내는 데이터라 로컬이 아니라 Render에만
+  있기 때문이다 (admin.html의 프로젝트 데이터와는 반대로, "로컬에서 고치고
+  git push" 흐름이 통하지 않는다).
+  ★ js/config.js의 PRODUCTION_API_BASE와 같은 주소여야 한다 — Render 주소가
+    바뀌면 두 곳 다 같이 고친다.
+-->
+<body data-api-base="https://portfolio-backend-ehgr.onrender.com/api">
 
   <!-- ================= 로그인 화면 ================= -->
   <div class="login-screen" id="loginScreen">

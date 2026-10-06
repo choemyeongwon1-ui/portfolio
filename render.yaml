@@ -30,11 +30,18 @@ services:
         value: "json"
       - key: SERVE_FRONTEND
         value: "false"
-      # Render 무료 플랜은 파일 저장이 영구적이지 않다(잠들었다 깨면 초기화).
-      # 그래서 여기서도 관리자 글쓰기는 꺼 둔다 — 이유는 README 참고.
-      # 관리자 페이지는 지금처럼 내 컴퓨터(npm run dev)에서만 쓴다.
+      # 방문 예약은 방문자가 실시간으로 보내는 것이라 Render에만 존재한다
+      # (프로젝트처럼 "로컬에서 고치고 git push" 방식이 안 통한다) —
+      # 그래서 예약 관리만큼은 이 서버의 /api/admin/* 를 켜 둬야 한다.
+      # 비밀번호로 보호되는 건 로컬과 동일하다.
+      #
+      # 다만 프로젝트 수정(글쓰기)은 여전히 내 컴퓨터(npm run dev)에서만 한다 —
+      # admin.html은 이 주소를 보지 않고 항상 로컬만 보도록 고정되어 있어서,
+      # 이 값을 켜도 프로젝트 데이터의 저장 방식·흐름은 바뀌지 않는다.
+      # 예약 상태 변경도 Render 무료 플랜 특성상(잠들었다 깨거나 재배포되면
+      # 파일이 초기화됨) 영구 보장은 안 된다 — 이유는 README 참고.
       - key: ENABLE_ADMIN
-        value: "false"
+        value: "true"
       - key: CORS_ORIGINS
         value: "*"
       - key: ADMIN_SESSION_MINUTES
