@@ -76,6 +76,9 @@ body {
   place-items: center;
   padding: 1.5rem;
 }
+/* display:grid는 명시도가 같아도 작성자 스타일이라 브라우저 기본
+   [hidden]{display:none}보다 항상 이긴다 — hidden일 때 확실히 숨긴다. */
+.login-screen[hidden] { display: none; }
 
 .login-box {
   width: 100%;
@@ -113,6 +116,7 @@ body {
 /* ---------- 관리 화면 뼈대 ---------- */
 
 .admin { min-height: 100vh; display: flex; flex-direction: column; }
+.admin[hidden] { display: none; }
 
 .admin-top {
   display: flex;
@@ -394,6 +398,7 @@ body {
   flex-direction: column;
   gap: 0.45rem;
 }
+.dup-panel[hidden] { display: none; }
 .dup-title  { font-weight: 800; font-size: 0.95rem; color: #8a6d2f; }
 .dup-target { font-size: 0.93rem; font-weight: 700; color: var(--text); }
 .dup-help   { font-size: 0.81rem; color: var(--text-sub); line-height: 1.55; }
@@ -410,6 +415,7 @@ body {
   flex-direction: column;
   gap: 0.6rem;
 }
+.dup-banner[hidden] { display: none; }
 .dup-banner-head { font-weight: 800; font-size: 0.89rem; color: #8a6d2f; }
 
 .dup-group { display: flex; flex-direction: column; gap: 0.35rem; }
