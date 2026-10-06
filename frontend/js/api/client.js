@@ -77,3 +77,53 @@ export async function apiGet(pathname, query) {
     clearTimeout(timer);
   }
 }
+
+/**
+ * API에 POST 요청을 보내고 data 부분만 돌려준다. 로그인이 필요 없는 공개 요청용.
+ * @param {string} pathname  예: '/reservations'
+ * @param {object} body
+ */
+export async function apiPost(pathname, body) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), config.requestTimeout);
+
+  try {
+    const response = await fetch(buildUrl(pathname), {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal
+    });
+
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      const error = new ApiError(payload?.error?.message ?? `요청이 실패했습니다 (${response.status})`, {
+        status: response.status,
+        code: payload?.error?.code
+      });
+      error.details = payload?.error?.details ?? [];
+      throw error;
+    }
+
+    return payload?.data;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+
+    if (error.name === 'AbortError') {
+      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+      throw new ApiError(
+        isLocal
+          ? '서버 응답이 너무 늦습니다. 잠시 후 다시 시도해 주세요.'
+          : '서버를 깨우는 중일 수 있습니다(무료 서버는 잠시 쉬었다 깨어납니다). 잠시 후 다시 시도해 주세요.',
+        { code: 'TIMEOUT' }
+      );
+    }
+
+    throw new ApiError('서버에 연결하지 못했습니다. 백엔드가 실행 중인지 확인해 주세요.', {
+      code: 'NETWORK_ERROR'
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}

@@ -4,19 +4,109 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>방문 예약 — 최명원 포트폴리오 🌿</title>
+  <meta name="description" content="상명대학교 천안캠퍼스 상록관 방문 예약 신청 페이지입니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/visit.css" />
+  <link rel="stylesheet" href="assets/css/reserve.css" />
 </head>
 <body>
 
-  <main class="visit-page">
+  <main class="visit-page reserve-page">
     <a class="visit-back" href="visit.html">← 찾아오는 길로 돌아가기</a>
 
     <header class="visit-header">
       <h1>방문 예약</h1>
-      <p class="visit-sub">이 페이지는 준비 중입니다. 내용은 다음 작업에서 채워집니다.</p>
+      <p class="visit-sub">날짜·시간과 연락 정보를 남겨 주시면 확인 후 답장드리겠습니다.</p>
     </header>
+
+    <form id="reserve-form" class="reserve-grid" novalidate>
+
+      <!-- 왼쪽: 날짜 · 시간 -->
+      <section class="reserve-card">
+        <h2>날짜 선택</h2>
+
+        <div class="calendar">
+          <div class="calendar-head">
+            <button type="button" id="cal-prev" class="cal-nav" aria-label="이전 달">‹</button>
+            <span id="cal-month-label" class="cal-month"></span>
+            <button type="button" id="cal-next" class="cal-nav" aria-label="다음 달">›</button>
+          </div>
+          <div class="calendar-weekdays">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div class="calendar-grid" id="cal-grid"></div>
+          <p class="calendar-note">주말·공휴일은 선택할 수 없습니다.</p>
+        </div>
+
+        <div class="selected-date-box">
+          <span class="field-label">선택한 날짜</span>
+          <p id="selected-date-text" class="selected-date-text">날짜를 선택해 주세요</p>
+        </div>
+
+        <label class="field-label" for="time-select">희망 시간 <span class="req">*</span></label>
+        <select id="time-select" class="field-input" required>
+          <option value="">시간을 선택해 주세요</option>
+        </select>
+      </section>
+
+      <!-- 오른쪽: 연락 정보 -->
+      <section class="reserve-card">
+        <h2>연락 정보</h2>
+
+        <label class="field-label" for="name-input">이름 <span class="req">*</span></label>
+        <input id="name-input" class="field-input" type="text" maxlength="40" required placeholder="이름을 입력해 주세요" />
+
+        <label class="field-label" for="email-input">답장받을 이메일 <span class="req">*</span></label>
+        <input id="email-input" class="field-input" type="email" maxlength="100" required placeholder="example@email.com" />
+        <p id="email-error" class="field-error" hidden>이메일 형식이 올바르지 않습니다. (예: example@email.com)</p>
+
+        <label class="field-label" for="purpose-input">방문 목적 <span class="req">*</span></label>
+        <textarea id="purpose-input" class="field-input field-textarea" rows="7" maxlength="1000" required placeholder="방문 목적을 자유롭게 작성해 주세요"></textarea>
+
+        <label class="consent-row">
+          <input type="checkbox" id="agree-checkbox" />
+          <span>입력 정보를 예약 상담 목적으로 운영자에게 전달하는 것에 동의합니다.</span>
+        </label>
+
+        <button type="submit" id="submit-btn" class="btn btn-solid reserve-submit-btn" disabled>예약하기</button>
+        <p id="form-error" class="field-error" hidden></p>
+      </section>
+    </form>
+
+    <!-- 확인 팝업 -->
+    <div id="confirm-overlay" class="confirm-overlay" hidden>
+      <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <h2 id="confirm-title">예약 내용을 확인해 주세요</h2>
+        <dl class="confirm-list">
+          <dt>날짜</dt><dd id="confirm-date"></dd>
+          <dt>시간</dt><dd id="confirm-time"></dd>
+          <dt>이름</dt><dd id="confirm-name"></dd>
+          <dt>이메일</dt><dd id="confirm-email"></dd>
+          <dt>방문 목적</dt><dd id="confirm-purpose"></dd>
+        </dl>
+        <p id="confirm-error" class="field-error" hidden></p>
+        <div class="confirm-actions">
+          <button type="button" id="confirm-edit" class="btn">다시 확인하기</button>
+          <button type="button" id="confirm-submit" class="btn btn-solid">예약 확정</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 완료 팝업 -->
+    <div id="success-overlay" class="confirm-overlay" hidden>
+      <div class="confirm-modal">
+        <h2>예약 요청이 접수되었습니다 🌿</h2>
+        <p>입력하신 이메일로 곧 답장드리겠습니다.</p>
+        <div class="confirm-actions">
+          <a class="btn btn-solid" href="index.html">포트폴리오로 돌아가기</a>
+        </div>
+      </div>
+    </div>
   </main>
 
+  <script type="module" src="js/reserve.js"></script>
 </body>
 </html>

@@ -15,21 +15,25 @@ import { config } from '../config/index.js';
 import { profileRepository as jsonProfile } from './json/profile.repository.js';
 import { skillsRepository as jsonSkills } from './json/skills.repository.js';
 import { projectsRepository as jsonProjects } from './json/projects.repository.js';
+import { reservationsRepository as jsonReservations } from './json/reservations.repository.js';
 
 import { profileRepository as dbProfile } from './db/profile.repository.js';
 import { skillsRepository as dbSkills } from './db/skills.repository.js';
 import { projectsRepository as dbProjects } from './db/projects.repository.js';
+import { reservationsRepository as dbReservations } from './db/reservations.repository.js';
 
 const implementations = {
   json: {
     profile: jsonProfile,
     skills: jsonSkills,
-    projects: jsonProjects
+    projects: jsonProjects,
+    reservations: jsonReservations
   },
   db: {
     profile: dbProfile,
     skills: dbSkills,
-    projects: dbProjects
+    projects: dbProjects,
+    reservations: dbReservations
   }
 };
 
@@ -42,5 +46,9 @@ if (!selected) {
   );
 }
 
-export const { profile: profileRepository, skills: skillsRepository, projects: projectsRepository } =
-  selected;
+export const {
+  profile: profileRepository,
+  skills: skillsRepository,
+  projects: projectsRepository,
+  reservations: reservationsRepository
+} = selected;

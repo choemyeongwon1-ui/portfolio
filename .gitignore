@@ -2,3 +2,7 @@
 node_modules/
 .env
 *.log
+
+# 방문자가 입력한 실제 예약 정보(이름·이메일·목적) — 개인정보라 커밋하지 않음
+backend/src/data/reservations.json
+backend/src/data/reservations.json.tmp

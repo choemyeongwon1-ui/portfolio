@@ -11,6 +11,7 @@ import { Router } from 'express';
 import profileRoutes from './profile.routes.js';
 import skillsRoutes from './skills.routes.js';
 import projectsRoutes from './projects.routes.js';
+import reservationsRoutes from './reservations.routes.js';
 import adminRoutes from './admin.routes.js';
 import { projectsController } from '../controllers/projects.controller.js';
 import { config } from '../config/index.js';
@@ -34,6 +35,7 @@ router.get('/categories', projectsController.categories);
 router.use('/profile', profileRoutes);
 router.use('/skills', skillsRoutes);
 router.use('/projects', projectsRoutes);
+router.use('/reservations', reservationsRoutes);
 
 // 관리자 전용. 로그인을 지나야 프로젝트를 고칠 수 있다.
 // ENABLE_ADMIN=false 인 서버(공개 배포판)에서는 이 경로 자체가 없다 —
