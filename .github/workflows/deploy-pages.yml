@@ -47,6 +47,7 @@ jobs:
 
           # 관리자 페이지와 그 전용 코드는 공개 사이트에 올리지 않는다.
           rm -f public/admin.html
+          rm -f public/admin-reservations.html
           rm -f public/assets/css/admin.css
           rm -rf public/js/admin
           rm -f public/js/api/admin.api.js

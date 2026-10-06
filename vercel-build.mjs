@@ -32,6 +32,7 @@ fs.cpSync(source, target, { recursive: true });
 // (이유: README.md의 "화면 — Vercel과 GitHub Pages" 절 참고)
 const exclude = [
   'admin.html',
+  'admin-reservations.html',
   'assets/css/admin.css',
   'js/admin',
   'js/api/admin.api.js',
