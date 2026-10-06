@@ -453,6 +453,43 @@ body {
   margin: 0 auto;
 }
 
+/* 전체 N건 / 접수 N건 / 확정 N건 ... 요약 문장 */
+.reservations-summary {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  margin-bottom: 0.9rem;
+}
+
+/* 상태 필터 탭 */
+.status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.filter-btn {
+  padding: 0.38rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-dk);
+  background: #fff;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-btn:hover { background: var(--bg-soft); }
+
+.filter-btn.is-active { color: #fff; border-color: transparent; }
+.filter-btn.is-active:not(.status-received):not(.status-confirmed):not(.status-change):not(.status-cancelled) {
+  background: var(--text);
+}
+.filter-btn.status-received.is-active  { background: #4a6fa5; }
+.filter-btn.status-confirmed.is-active { background: var(--primary); }
+.filter-btn.status-change.is-active    { background: var(--draft); }
+.filter-btn.status-cancelled.is-active { background: var(--danger); }
+
 .reservations-table-wrap {
   background: var(--bg-card);
   border: 1px solid var(--border);

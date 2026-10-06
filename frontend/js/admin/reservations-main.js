@@ -1,7 +1,7 @@
 // ==========================================
 // 예약 관리 페이지 진입점
 // ------------------------------------------
-// 로그인 → 목록 불러오기 → 상태 버튼 클릭 시 갱신, 순서로 묶는다.
+// 로그인 → 목록 불러오기 → 요약·필터·테이블 그리기 → 상태 버튼으로 갱신, 순서로 묶는다.
 // 로그인 화면(auth.js)은 admin.html과 같은 요소 id를 쓰므로 그대로 재사용한다.
 // ==========================================
 
@@ -10,7 +10,12 @@ import { $ } from '../lib/dom.js';
 import { showToast } from '../lib/toast.js';
 
 import { initAuth, showLogin, showAdmin } from './auth.js';
-import { renderReservations } from './reservations-list.js';
+import { renderSummary, renderFilterButtons, renderReservations } from './reservations-list.js';
+
+const state = {
+  all: [], // 서버에서 받은 전체 목록
+  filter: 'all' // 'all' 또는 RESERVATION_STATUSES 중 하나
+};
 
 function handleAuthError(error) {
   if (error?.status === 401) {
@@ -21,10 +26,24 @@ function handleAuthError(error) {
   return false;
 }
 
+/** 현재 상태(state)를 기준으로 요약·필터 탭·테이블을 다시 그린다 (네트워크 호출 없음). */
+function renderAll() {
+  renderSummary(state.all);
+  renderFilterButtons(state.filter, state.all, handleFilterSelect);
+
+  const filtered = state.filter === 'all' ? state.all : state.all.filter((r) => r.status === state.filter);
+  renderReservations(filtered, handleChangeStatus, state.filter);
+}
+
+function handleFilterSelect(filter) {
+  state.filter = filter;
+  renderAll();
+}
+
 async function loadReservations() {
   try {
-    const items = await adminApi.listReservations();
-    renderReservations(items ?? [], handleChangeStatus);
+    state.all = (await adminApi.listReservations()) ?? [];
+    renderAll();
   } catch (error) {
     if (handleAuthError(error)) return;
     showToast(error.message);
