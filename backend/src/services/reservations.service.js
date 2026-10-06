@@ -181,6 +181,17 @@ export const reservationsService = {
     return { id: reservation.id, createdAt: reservation.createdAt };
   },
 
+  /**
+   * 특정 날짜에 이미 찬 시간 목록. 예약 페이지의 드롭다운이 "(완료)" 표시에 쓴다.
+   * 개인정보는 전혀 돌려주지 않으므로 로그인 없이 공개로 호출할 수 있다.
+   */
+  async getBookedTimes(date) {
+    if (typeof date !== 'string' || !DATE_PATTERN.test(date)) {
+      throw new BadRequestError('날짜 형식이 올바르지 않습니다.');
+    }
+    return reservationsRepository.listBookedTimes(date);
+  },
+
   // ---- 여기부터는 관리자 페이지 전용 ----
 
   /** 전체 예약 목록 (관리자용) */

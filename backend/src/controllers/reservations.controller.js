@@ -11,5 +11,11 @@ export const reservationsController = {
   create: asyncHandler(async (req, res) => {
     const result = await reservationsService.create(req.body ?? {});
     res.status(201).json({ data: result });
+  }),
+
+  // GET /api/reservations/booked-times?date=YYYY-MM-DD
+  bookedTimes: asyncHandler(async (req, res) => {
+    const times = await reservationsService.getBookedTimes(req.query.date);
+    res.json({ data: { times } });
   })
 };

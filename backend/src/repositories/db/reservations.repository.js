@@ -25,5 +25,12 @@ export const reservationsRepository = {
     throw new Error(
       'reservationsRepository.updateStatus()를 구현하세요. (connection: ' + typeof db + ')'
     );
+  },
+
+  async listBookedTimes(date) {
+    const db = await getConnection();
+    throw new Error(
+      'reservationsRepository.listBookedTimes()를 구현하세요. (connection: ' + typeof db + ')'
+    );
   }
 };

@@ -123,7 +123,7 @@ function renderCalendar() {
       state.selectedDate = key;
       renderCalendar();
       updateSelectedDateText();
-      updateSubmitEnabled();
+      loadBookedTimesForDate(key);
     });
 
     grid.appendChild(btn);
@@ -168,12 +168,52 @@ $('cal-next').addEventListener('click', () => {
 /* 4. 시간 드롭다운 ----------------------------------------------------------- */
 
 const timeSelect = $('time-select');
-for (const t of buildTimeOptions()) {
-  const option = document.createElement('option');
-  option.value = t;
-  option.textContent = t;
-  timeSelect.appendChild(option);
+
+/**
+ * 시간 드롭다운을 다시 그린다. 이미 찬(취소 제외) 시간은 "(완료)"를 붙이고 고를 수 없게 한다.
+ * @param {string[]} bookedTimes 날짜를 고르면 서버에서 받아온, 그 날짜에 이미 찬 시간 목록
+ */
+function renderTimeOptions(bookedTimes = []) {
+  const bookedSet = new Set(bookedTimes);
+  const previousValue = timeSelect.value;
+
+  timeSelect.replaceChildren();
+
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '시간을 선택해 주세요';
+  timeSelect.appendChild(placeholder);
+
+  for (const t of buildTimeOptions()) {
+    const option = document.createElement('option');
+    option.value = t;
+    const taken = bookedSet.has(t);
+    option.textContent = taken ? `${t} (완료)` : t;
+    option.disabled = taken;
+    timeSelect.appendChild(option);
+  }
+
+  // 이전에 고른 시간이 이번 조회 결과로 찼으면 다시 고르게 한다. 비어 있으면 그대로 유지.
+  timeSelect.value = bookedSet.has(previousValue) ? '' : previousValue;
 }
+
+/** 고른 날짜의 예약 현황을 서버에서 받아와 드롭다운에 반영한다. */
+async function loadBookedTimesForDate(date) {
+  timeSelect.disabled = true;
+  try {
+    const bookedTimes = await reservationsApi.getBookedTimes(date);
+    renderTimeOptions(bookedTimes);
+  } catch (err) {
+    // 조회가 실패해도 예약 자체는 막지 않는다 — 실제 중복 여부는 제출할 때 서버가 다시 확인한다.
+    console.warn('예약 현황을 불러오지 못했습니다.', err);
+    renderTimeOptions([]);
+  } finally {
+    timeSelect.disabled = false;
+    updateSubmitEnabled();
+  }
+}
+
+renderTimeOptions();
 timeSelect.addEventListener('change', updateSubmitEnabled);
 
 /* 5. 입력 필드 검증 ----------------------------------------------------------- */
