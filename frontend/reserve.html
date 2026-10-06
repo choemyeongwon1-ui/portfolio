@@ -19,14 +19,14 @@
 
     <header class="visit-header">
       <h1>방문 예약</h1>
-      <p class="visit-sub">날짜·시간과 연락 정보를 남겨 주시면 확인 후 답장드리겠습니다.</p>
+      <p class="visit-sub">희망하는 날짜와 시간을 고르고 정보를 입력해 주세요. 평일(공휴일 제외)만 선택할 수 있습니다.</p>
     </header>
 
     <form id="reserve-form" class="reserve-grid" novalidate>
 
       <!-- 왼쪽: 날짜 · 시간 -->
       <section class="reserve-card">
-        <h2>날짜 선택</h2>
+        <h2>1. 방문 날짜 <span class="req">*</span></h2>
 
         <div class="calendar">
           <div class="calendar-head">
@@ -38,7 +38,7 @@
             <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
           </div>
           <div class="calendar-grid" id="cal-grid"></div>
-          <p class="calendar-note">주말·공휴일은 선택할 수 없습니다.</p>
+          <p class="calendar-note">토·일, 공휴일, 지난 날짜와 오늘은 선택할 수 없습니다.</p>
         </div>
 
         <div class="selected-date-box">
@@ -54,24 +54,26 @@
 
       <!-- 오른쪽: 연락 정보 -->
       <section class="reserve-card">
-        <h2>연락 정보</h2>
+        <h2>2. 신청자 정보</h2>
 
         <label class="field-label" for="name-input">이름 <span class="req">*</span></label>
-        <input id="name-input" class="field-input" type="text" maxlength="40" required placeholder="이름을 입력해 주세요" />
+        <input id="name-input" class="field-input" type="text" maxlength="40" required placeholder="예) 홍길동" />
 
         <label class="field-label" for="email-input">답장받을 이메일 <span class="req">*</span></label>
-        <input id="email-input" class="field-input" type="email" maxlength="100" required placeholder="example@email.com" />
+        <input id="email-input" class="field-input" type="email" maxlength="100" required placeholder="예) name@example.com" />
         <p id="email-error" class="field-error" hidden>이메일 형식이 올바르지 않습니다. (예: example@email.com)</p>
 
         <label class="field-label" for="purpose-input">방문 목적 <span class="req">*</span></label>
-        <textarea id="purpose-input" class="field-input field-textarea" rows="7" maxlength="1000" required placeholder="방문 목적을 자유롭게 작성해 주세요"></textarea>
+        <textarea id="purpose-input" class="field-input field-textarea" rows="7" maxlength="1000" required placeholder="방문하시려는 이유와 나누고 싶은 이야기를 자유롭게 적어 주세요."></textarea>
+        <p class="char-count"><span id="purpose-count">0</span> / 1000자</p>
 
         <label class="consent-row">
           <input type="checkbox" id="agree-checkbox" />
-          <span>입력 정보를 예약 상담 목적으로 운영자에게 전달하는 것에 동의합니다.</span>
+          <span>입력 정보를 예약 상담 목적으로 운영자에게 전달하는 것에 동의합니다. <span class="req">*</span></span>
         </label>
 
         <button type="submit" id="submit-btn" class="btn btn-solid reserve-submit-btn" disabled>예약하기</button>
+        <p id="submit-hint" class="submit-hint"></p>
         <p id="form-error" class="field-error" hidden></p>
       </section>
     </form>

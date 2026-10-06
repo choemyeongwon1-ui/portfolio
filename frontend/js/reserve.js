@@ -12,12 +12,16 @@ const $ = (id) => document.getElementById(id);
 /* 1. 공휴일 · 시간 범위 ----------------------------------------------------- */
 
 // 2026년 대한민국 공휴일(대체공휴일 포함). backend/src/services/reservations.service.js 와 맞춰 둔다.
-const HOLIDAYS_2026 = new Set([
-  '2026-01-01', '2026-02-16', '2026-02-17', '2026-02-18',
-  '2026-03-01', '2026-03-02', '2026-05-05', '2026-05-24', '2026-05-25',
-  '2026-06-06', '2026-08-15', '2026-08-17',
-  '2026-09-24', '2026-09-25', '2026-09-26',
-  '2026-10-03', '2026-10-05', '2026-10-09', '2026-12-25'
+const HOLIDAYS_2026 = new Map([
+  ['2026-01-01', '신정'],
+  ['2026-02-16', '설날 연휴'], ['2026-02-17', '설날'], ['2026-02-18', '설날 연휴'],
+  ['2026-03-01', '삼일절'], ['2026-03-02', '대체공휴일'],
+  ['2026-05-05', '어린이날'], ['2026-05-24', '부처님오신날'], ['2026-05-25', '대체공휴일'],
+  ['2026-06-06', '현충일'],
+  ['2026-08-15', '광복절'], ['2026-08-17', '대체공휴일'],
+  ['2026-09-24', '추석 연휴'], ['2026-09-25', '추석'], ['2026-09-26', '추석 연휴'],
+  ['2026-10-03', '개천절'], ['2026-10-05', '대체공휴일'], ['2026-10-09', '한글날'],
+  ['2026-12-25', '크리스마스']
 ]);
 
 function toDateKey(year, month, day) {
@@ -26,11 +30,16 @@ function toDateKey(year, month, day) {
   return `${year}-${m}-${d}`;
 }
 
+function startOfToday() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+// 당일 예약은 준비 시간이 필요해 받지 않는다 — 내일부터 선택 가능.
 function isSelectableDate(year, month, day) {
   const date = new Date(year, month, day);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (date < today) return false;
+  if (date <= startOfToday()) return false;
 
   const weekday = date.getDay();
   if (weekday === 0 || weekday === 6) return false; // 주말 제외
@@ -77,17 +86,34 @@ function renderCalendar() {
     grid.appendChild(document.createElement('span'));
   }
 
+  const todayKey = toDateKey(today.getFullYear(), today.getMonth(), today.getDate());
+
   for (let day = 1; day <= daysInMonth; day += 1) {
     const key = toDateKey(viewYear, viewMonth, day);
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = String(day);
     btn.className = 'cal-day';
+
+    const dayLabel = document.createElement('span');
+    dayLabel.className = 'cal-day-num';
+    dayLabel.textContent = String(day);
+    btn.appendChild(dayLabel);
+
+    const holidayName = HOLIDAYS_2026.get(key);
+    if (holidayName) {
+      const tag = document.createElement('span');
+      tag.className = 'cal-day-holiday';
+      tag.textContent = holidayName;
+      btn.appendChild(tag);
+    }
 
     const selectable = isSelectableDate(viewYear, viewMonth, day);
     if (!selectable) {
       btn.classList.add('is-disabled');
       btn.disabled = true;
+    }
+    if (key === todayKey) {
+      btn.classList.add('is-today');
     }
     if (key === state.selectedDate) {
       btn.classList.add('is-selected');
@@ -157,9 +183,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const nameInput = $('name-input');
 const emailInput = $('email-input');
 const purposeInput = $('purpose-input');
+const purposeCount = $('purpose-count');
 const emailError = $('email-error');
 const agreeCheckbox = $('agree-checkbox');
 const submitBtn = $('submit-btn');
+const submitHint = $('submit-hint');
 
 function isEmailValid() {
   return EMAIL_PATTERN.test(emailInput.value.trim());
@@ -173,18 +201,27 @@ function updateEmailFeedback() {
 }
 
 function updateSubmitEnabled() {
-  const ready =
-    Boolean(state.selectedDate) &&
-    Boolean(timeSelect.value) &&
-    nameInput.value.trim().length > 0 &&
-    isEmailValid() &&
-    purposeInput.value.trim().length > 0 &&
-    agreeCheckbox.checked;
+  const missing = [];
+  if (!state.selectedDate) missing.push('방문 날짜');
+  if (!timeSelect.value) missing.push('희망 시간');
+  if (nameInput.value.trim().length === 0) missing.push('이름');
+  if (!isEmailValid()) missing.push('이메일');
+  if (purposeInput.value.trim().length === 0) missing.push('방문 목적');
+  if (!agreeCheckbox.checked) missing.push('정보 제공 동의');
 
-  submitBtn.disabled = !ready;
+  submitBtn.disabled = missing.length > 0;
+  submitHint.textContent = missing.length > 0 ? `입력이 필요한 항목: ${missing.join(', ')}` : '';
 }
 
-[nameInput, purposeInput].forEach((el) => el.addEventListener('input', updateSubmitEnabled));
+function updatePurposeCount() {
+  purposeCount.textContent = String(purposeInput.value.length);
+}
+
+nameInput.addEventListener('input', updateSubmitEnabled);
+purposeInput.addEventListener('input', () => {
+  updatePurposeCount();
+  updateSubmitEnabled();
+});
 emailInput.addEventListener('input', () => {
   updateEmailFeedback();
   updateSubmitEnabled();
@@ -264,4 +301,5 @@ confirmSubmitBtn.addEventListener('click', async () => {
 
 renderCalendar();
 updateSelectedDateText();
+updatePurposeCount();
 updateSubmitEnabled();

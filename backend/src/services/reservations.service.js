@@ -47,11 +47,22 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const LIMITS = { name: 40, email: 100, purpose: 1000 };
 
-function isWeekday(dateStr) {
+function parseLocalDate(dateStr) {
   // 'YYYY-MM-DD' 를 그 날짜의 현지 자정으로 해석한다 (UTC 변환으로 요일이 밀리지 않도록).
   const [y, m, d] = dateStr.split('-').map(Number);
-  const day = new Date(y, m - 1, d).getDay();
+  return new Date(y, m - 1, d);
+}
+
+function isWeekday(dateStr) {
+  const day = parseLocalDate(dateStr).getDay();
   return day !== 0 && day !== 6; // 0=일요일, 6=토요일
+}
+
+// 당일 예약은 준비 시간이 필요해 받지 않는다 — 내일부터 가능 (frontend/js/reserve.js 와 맞춤).
+function isAfterToday(dateStr) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return parseLocalDate(dateStr) > today;
 }
 
 function validate(input) {
@@ -79,6 +90,8 @@ function validate(input) {
   const date = typeof input.date === 'string' ? input.date.trim() : '';
   if (!date || !DATE_PATTERN.test(date)) {
     errors.push({ field: 'date', message: '날짜를 선택해 주세요.' });
+  } else if (!isAfterToday(date)) {
+    errors.push({ field: 'date', message: '당일 예약은 받지 않습니다. 내일 이후 날짜를 선택해 주세요.' });
   } else if (!isWeekday(date)) {
     errors.push({ field: 'date', message: '평일만 예약할 수 있습니다.' });
   } else if (HOLIDAYS_2026.has(date)) {

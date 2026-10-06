@@ -60,10 +60,6 @@
   background: var(--bg2); /* 타일 로딩 전 깜빡임 방지 */
 }
 
-/* OSM 기본 타일은 색이 진해서, 채도·대비를 낮춰 사이트 톤에 맞게 차분하게 보이도록 함 */
-.visit-map .leaflet-tile-pane {
-  filter: saturate(0.55) brightness(1.08) contrast(0.92);
-}
 
 /* Leaflet 기본 UI를 테마 톤으로 다듬기 */
 .visit-map .leaflet-control-zoom a {

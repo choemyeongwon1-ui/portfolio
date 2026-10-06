@@ -1,7 +1,12 @@
-// 찾아오는 길 페이지 — 지도(Leaflet + OpenStreetMap)와 날씨(Open-Meteo)를 표시합니다.
+// 찾아오는 길 페이지 — 지도(Leaflet + Esri World Imagery)와 날씨(Open-Meteo)를 표시합니다.
 // 둘 다 API 키가 필요 없는 무료 서비스입니다.
-// (CARTO는 키가 필요하도록 바뀌었고, Esri 회색 타일은 이 지역 커버리지가 없어서
-//  전세계 커버리지가 확실한 표준 OSM 타일로 정착했습니다. 톤은 CSS 필터로 조정.)
+//
+// 타일 공급자를 세 번 바꿨다:
+//   1) CARTO 익명 타일 → 키가 필요하도록 정책이 바뀌어 깨짐
+//   2) Esri 회색 캔버스/스트리트맵 → 무료지만 이 캠퍼스 지역 데이터가 아예 없어 깨짐
+//   3) OpenStreetMap 표준 타일 → 지역 커버리지는 완벽했지만, 이건 가벼운 개발용 서버라
+//      운영 사이트에서 계속 불러오면 정책 위반으로 차단된다(x-blocked 헤더로 확인).
+// 그래서 커버리지도 확실하고 운영 환경에서 막히지 않는 Esri 위성 이미지로 정착했다.
 
 const CAMPUS_LAT = 36.8330;
 const CAMPUS_LON = 127.1790;
@@ -13,12 +18,15 @@ function initMap() {
     zoomControl: false,
   }).setView([CAMPUS_LAT, CAMPUS_LON], 16);
 
-  // OpenStreetMap 표준 타일 — 전세계 커버리지가 확실한 무료 타일 (키 불필요)
-  // 기본 색이 진해서 .visit-map 에 CSS 필터를 걸어 톤을 차분하게 눌렀습니다.
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19,
-  }).addTo(map);
+  // Esri World Imagery — 위성 이미지. 키 불필요, 전세계 커버리지, 운영 환경 사용 가능.
+  L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {
+      attribution:
+        'Tiles &copy; <a href="https://www.esri.com">Esri</a> — Esri, Maxar, Earthstar Geographics, and the GIS User Community',
+      maxZoom: 19,
+    }
+  ).addTo(map);
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
