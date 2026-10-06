@@ -1,5 +1,7 @@
-// 찾아오는 길 페이지 — 지도(Leaflet + CARTO)와 날씨(Open-Meteo)를 표시합니다.
+// 찾아오는 길 페이지 — 지도(Leaflet + OpenStreetMap)와 날씨(Open-Meteo)를 표시합니다.
 // 둘 다 API 키가 필요 없는 무료 서비스입니다.
+// (CARTO는 키가 필요하도록 바뀌었고, Esri 회색 타일은 이 지역 커버리지가 없어서
+//  전세계 커버리지가 확실한 표준 OSM 타일로 정착했습니다. 톤은 CSS 필터로 조정.)
 
 const CAMPUS_LAT = 36.8330;
 const CAMPUS_LON = 127.1790;
@@ -11,9 +13,10 @@ function initMap() {
     zoomControl: false,
   }).setView([CAMPUS_LAT, CAMPUS_LON], 16);
 
-  // CARTO Voyager — 밝고 미니멀한 스타일 타일 (무료, 키 불필요)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  // OpenStreetMap 표준 타일 — 전세계 커버리지가 확실한 무료 타일 (키 불필요)
+  // 기본 색이 진해서 .visit-map 에 CSS 필터를 걸어 톤을 차분하게 눌렀습니다.
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19,
   }).addTo(map);
 
