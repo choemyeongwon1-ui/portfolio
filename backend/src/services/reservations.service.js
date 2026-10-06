@@ -8,6 +8,7 @@
 
 import { reservationsRepository } from '../repositories/index.js';
 import { BadRequestError } from '../lib/AppError.js';
+import { config } from '../config/index.js';
 
 // 2026년 대한민국 공휴일(대체공휴일 포함). 해가 바뀌면 이 목록만 갱신하면 된다.
 const HOLIDAYS_2026 = new Set([
@@ -118,6 +119,33 @@ function validate(input) {
   return value;
 }
 
+// Formspree로 같은 내용을 한 번 더 보내 이메일 알림을 받는다.
+// 실패해도 예약 저장 자체는 이미 끝난 뒤이므로, 여기서는 막지 않고 로그만 남긴다.
+async function notifyByEmail(reservation) {
+  if (!config.formspreeEndpoint) return;
+
+  try {
+    const res = await fetch(config.formspreeEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        email: reservation.email, // Formspree가 이 필드를 답장(reply-to) 주소로 쓴다.
+        name: reservation.name,
+        date: reservation.date,
+        time: reservation.time,
+        purpose: reservation.purpose,
+        _subject: `[방문 예약] ${reservation.name} · ${reservation.date} ${reservation.time}`
+      })
+    });
+
+    if (!res.ok) {
+      console.error('[reservations] Formspree 알림 실패:', res.status, await res.text().catch(() => ''));
+    }
+  } catch (error) {
+    console.error('[reservations] Formspree 알림 중 오류:', error);
+  }
+}
+
 export const reservationsService = {
   async create(input) {
     const value = validate(input);
@@ -129,8 +157,8 @@ export const reservationsService = {
     };
 
     await reservationsRepository.insert(reservation);
+    await notifyByEmail(reservation);
 
-    // 이메일 본문·답장 내용 등은 아직 처리하지 않는다 — 우선 저장만 한다.
     return { id: reservation.id, createdAt: reservation.createdAt };
   }
 };

@@ -39,6 +39,10 @@ services:
         value: "*"
       - key: ADMIN_SESSION_MINUTES
         value: "120"
+      # 방문 예약 접수 시 이메일로 알림을 보낼 Formspree 엔드포인트.
+      # 비밀값이 아니라(프론트엔드 폼 action에 그대로 노출돼도 되는 주소) 여기 직접 적는다.
+      - key: FORMSPREE_ENDPOINT
+        value: "https://formspree.io/f/mqpeaaej"
       # 비밀번호 해시는 여기 적지 않는다. Render가 만들 때 직접 물어본다.
       - key: ADMIN_PASSWORD_HASH
         sync: false

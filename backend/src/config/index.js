@@ -62,6 +62,10 @@ export const config = {
     enabled: toBool(process.env.ENABLE_ADMIN, true)
   },
 
+  // 방문 예약이 접수될 때 같은 내용을 한 번 더 보낼 Formspree 엔드포인트.
+  // 비워 두면(기본값) 알림 없이 예약 저장만 동작한다.
+  formspreeEndpoint: process.env.FORMSPREE_ENDPOINT || '',
+
   // 프론트엔드에서 API를 호출할 수 있게 허용할 주소 목록.
   // 쉼표로 구분해서 여러 개를 넣을 수 있다. '*'면 전부 허용.
   corsOrigins: (process.env.CORS_ORIGINS || '*')
