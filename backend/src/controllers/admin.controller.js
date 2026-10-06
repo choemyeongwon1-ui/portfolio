@@ -4,6 +4,7 @@
 
 import { authService } from '../services/auth.service.js';
 import { projectsService } from '../services/projects.service.js';
+import { reservationsService } from '../services/reservations.service.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 import { BadRequestError } from '../lib/AppError.js';
 
@@ -74,5 +75,18 @@ export const adminController = {
   remove: asyncHandler(async (req, res) => {
     const result = await projectsService.deleteProject(req.params.id);
     res.json({ data: result });
+  }),
+
+  // GET /api/admin/reservations — 방문 예약 전체 목록
+  reservationsList: asyncHandler(async (req, res) => {
+    const items = await reservationsService.list();
+    res.json({ data: items });
+  }),
+
+  // PATCH /api/admin/reservations/:id  { status }
+  reservationsUpdateStatus: asyncHandler(async (req, res) => {
+    const status = req.body?.status;
+    const reservation = await reservationsService.updateStatus(req.params.id, status);
+    res.json({ data: reservation });
   })
 };

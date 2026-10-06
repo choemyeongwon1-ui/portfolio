@@ -164,5 +164,15 @@ export const adminApi = {
   /** 분야 목록은 공개 API를 그대로 쓴다 */
   getCategories() {
     return request('GET', '/categories');
+  },
+
+  /** 방문 예약 전체 목록 */
+  listReservations() {
+    return request('GET', '/admin/reservations');
+  },
+
+  /** 예약 하나의 처리 상태를 바꾼다 (접수 / 확정 / 변경 요청 / 취소) */
+  updateReservationStatus(id, status) {
+    return request('PATCH', `/admin/reservations/${encodeURIComponent(id)}`, { status });
   }
 };

@@ -18,5 +18,12 @@ export const reservationsRepository = {
     throw new Error(
       'reservationsRepository.insert()를 구현하세요. (connection: ' + typeof db + ')'
     );
+  },
+
+  async updateStatus(id, status) {
+    const db = await getConnection();
+    throw new Error(
+      'reservationsRepository.updateStatus()를 구현하세요. (connection: ' + typeof db + ')'
+    );
   }
 };

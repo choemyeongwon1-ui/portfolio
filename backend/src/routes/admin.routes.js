@@ -29,4 +29,7 @@ router.get('/projects/:id', adminController.detail);
 router.put('/projects/:id', adminController.update);
 router.delete('/projects/:id', adminController.remove);
 
+router.get('/reservations', adminController.reservationsList);
+router.patch('/reservations/:id', adminController.reservationsUpdateStatus);
+
 export default router;

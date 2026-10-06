@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>예약 관리 · 최명원 포트폴리오</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body data-api-base="/api">
+
+  <!-- ================= 로그인 화면 ================= -->
+  <div class="login-screen" id="loginScreen">
+    <form class="login-box" id="loginForm" autocomplete="off" onsubmit="return false">
+      <h1>예약 관리</h1>
+      <p class="login-sub">관리자 비밀번호를 입력하세요</p>
+
+      <label class="field">
+        <span class="field-label">비밀번호</span>
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="예: 비밀번호를 입력하세요"
+          autocomplete="new-password"
+          spellcheck="false"
+          required
+        />
+      </label>
+
+      <p class="login-error" id="loginError" hidden></p>
+
+      <button type="submit" class="btn btn-primary" id="loginSubmit">로그인</button>
+    </form>
+  </div>
+
+  <!-- ================= 예약 관리 화면 ================= -->
+  <div class="admin" id="adminScreen" hidden>
+
+    <header class="admin-top">
+      <div>
+        <h1>예약 관리</h1>
+        <p class="admin-sub">방문 예약 요청을 확인하고 처리 상태를 바꿀 수 있습니다</p>
+      </div>
+      <div class="admin-top-actions">
+        <a class="btn btn-ghost" href="admin.html">프로젝트 관리</a>
+        <button type="button" class="btn btn-ghost" id="logoutBtn">로그아웃</button>
+      </div>
+    </header>
+
+    <main class="reservations-wrap">
+      <p class="list-count" id="listCount">불러오는 중…</p>
+
+      <div class="reservations-table-wrap">
+        <table class="reservations-table">
+          <thead>
+            <tr>
+              <th>예약 번호</th>
+              <th>신청자 / 이메일</th>
+              <th>방문 희망 시간</th>
+              <th>방문 목적</th>
+              <th>처리 상태</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="reservationRows"></tbody>
+        </table>
+        <p class="list-empty" id="reservationsEmpty" hidden>아직 들어온 예약 요청이 없습니다.</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script type="module" src="js/admin/reservations-main.js"></script>
+</body>
+</html>

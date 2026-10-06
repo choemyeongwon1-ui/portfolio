@@ -23,5 +23,21 @@ export const reservationsRepository = {
     reservations.push(reservation);
     await writeJson(FILE, reservations);
     return reservation;
+  },
+
+  /** 예약의 처리 상태를 바꾼다. 없으면 null. @returns {Promise<object|null>} */
+  async updateStatus(id, status) {
+    const reservations = await readJson(FILE).catch(() => []);
+    const index = reservations.findIndex((item) => item.id === id);
+
+    if (index === -1) return null;
+
+    reservations[index] = {
+      ...reservations[index],
+      status,
+      updatedAt: new Date().toISOString()
+    };
+    await writeJson(FILE, reservations);
+    return reservations[index];
   }
 };

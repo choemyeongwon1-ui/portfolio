@@ -6,9 +6,18 @@
 // 화면 코드를 우회해서 API를 직접 두드리는 경우를 막기 위해서다.
 // ==========================================
 
+import { createHash } from 'node:crypto';
+
 import { reservationsRepository } from '../repositories/index.js';
-import { BadRequestError } from '../lib/AppError.js';
+import { BadRequestError, NotFoundError } from '../lib/AppError.js';
 import { config } from '../config/index.js';
+
+// 처리 상태 4가지. 관리자 페이지의 버튼도 이 목록을 그대로 따른다.
+//   접수      — 방문자가 막 신청한 상태 (기본값)
+//   확정      — 운영자가 그 날짜·시간으로 승인함
+//   변경 요청 — 미팅은 하고 싶으나 다른 시간을 요청함
+//   취소      — 이 방문을 받지 않기로 함
+export const RESERVATION_STATUSES = ['접수', '확정', '변경 요청', '취소'];
 
 // 2026년 대한민국 공휴일(대체공휴일 포함). 해가 바뀌면 이 목록만 갱신하면 된다.
 const HOLIDAYS_2026 = new Set([
@@ -64,6 +73,14 @@ function isAfterToday(dateStr) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return parseLocalDate(dateStr) > today;
+}
+
+// 예약 번호 — 이름·이메일·방문 날짜·시간으로 만든다.
+// 같은 사람이어도 희망 시간이 다르면 번호가 달라지고, 같은 사람이 같은 시간을
+// 두 번 신청하면 번호가 같아진다 (중복 신청을 알아보기 쉽도록 만든 의도된 동작).
+function makeReservationCode({ name, email, date, time }) {
+  const hash = createHash('sha256').update(`${name}|${email}|${date}T${time}`).digest('hex');
+  return hash.slice(0, 6).toUpperCase();
 }
 
 function validate(input) {
@@ -152,6 +169,8 @@ export const reservationsService = {
 
     const reservation = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      code: makeReservationCode(value),
+      status: RESERVATION_STATUSES[0], // '접수'
       ...value,
       createdAt: new Date().toISOString()
     };
@@ -160,5 +179,28 @@ export const reservationsService = {
     await notifyByEmail(reservation);
 
     return { id: reservation.id, createdAt: reservation.createdAt };
+  },
+
+  // ---- 여기부터는 관리자 페이지 전용 ----
+
+  /** 전체 예약 목록 (관리자용) */
+  async list() {
+    return reservationsRepository.list();
+  },
+
+  /** 예약 하나의 처리 상태를 바꾼다. */
+  async updateStatus(id, status) {
+    if (!RESERVATION_STATUSES.includes(status)) {
+      throw new BadRequestError(
+        `처리 상태는 다음 중 하나여야 합니다: ${RESERVATION_STATUSES.join(', ')}`
+      );
+    }
+
+    const updated = await reservationsRepository.updateStatus(id, status);
+    if (!updated) {
+      throw new NotFoundError('예약을 찾을 수 없습니다.');
+    }
+
+    return updated;
   }
 };

@@ -434,3 +434,102 @@ body {
 }
 .dup-row-actions { display: flex; gap: 0.3rem; }
 .dup-row-actions .btn { padding: 0.28rem 0.55rem; font-size: 0.79rem; }
+
+/* ==========================================
+   예약 관리 테이블
+   ========================================== */
+
+.reservations-wrap {
+  flex: 1;
+  padding: 1.4rem 1.6rem 2.4rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.reservations-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.reservations-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+}
+
+.reservations-table th,
+.reservations-table td {
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.reservations-table th {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.reservations-table tbody tr:last-child td { border-bottom: none; }
+.reservations-table tbody tr:hover { background: var(--bg-soft); }
+
+.code-cell {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: var(--text-sub);
+  white-space: nowrap;
+}
+
+.applicant-name { font-weight: 700; }
+.applicant-email { font-size: 0.8rem; color: var(--text-light); }
+
+.purpose-cell {
+  min-width: 14rem;
+  max-width: 22rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-sub);
+}
+
+/* 처리 상태 배지 */
+.status-badge {
+  display: inline-block;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.status-badge.status-received  { background: #e7edf6; color: #4a6fa5; border-color: rgba(74,111,165,0.3); }
+.status-badge.status-confirmed { background: rgba(106,154,82,0.15); color: var(--primary-dk); border-color: rgba(106,154,82,0.35); }
+.status-badge.status-change    { background: var(--draft-bg); color: var(--draft); border-color: rgba(154,139,82,0.35); }
+.status-badge.status-cancelled { background: var(--danger-bg); color: var(--danger); border-color: rgba(166,80,63,0.3); }
+
+/* 관리 열 — 상태 버튼 4개 */
+.actions-cell { min-width: 15rem; }
+.actions-cell { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+.status-btn {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid var(--border-dk);
+  background: #fff;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.status-btn:hover { background: var(--bg-soft); }
+
+.status-btn.status-received.is-active  { background: #4a6fa5; border-color: #4a6fa5; color: #fff; }
+.status-btn.status-confirmed.is-active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.status-btn.status-change.is-active    { background: var(--draft); border-color: var(--draft); color: #fff; }
+.status-btn.status-cancelled.is-active { background: var(--danger); border-color: var(--danger); color: #fff; }
