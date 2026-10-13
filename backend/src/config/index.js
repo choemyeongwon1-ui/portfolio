@@ -41,6 +41,13 @@ export const config = {
     name: process.env.DATABASE_NAME || 'portfolio'
   },
 
+  // Supabase 연결 정보 (DATA_SOURCE=db 일 때 repositories/db 가 사용).
+  // SUPABASE_SERVICE_KEY는 RLS를 우회하는 비밀 키이므로 서버(Render)에서만 쓴다.
+  supabase: {
+    url: process.env.SUPABASE_URL || '',
+    serviceKey: process.env.SUPABASE_SERVICE_KEY || ''
+  },
+
   // 관리자 로그인 설정.
   // 비밀번호는 여기(서버)에서만 다루며, 프론트엔드로 절대 내보내지 않는다.
   admin: {

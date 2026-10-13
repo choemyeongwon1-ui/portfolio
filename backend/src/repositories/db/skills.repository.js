@@ -1,18 +1,27 @@
 // ==========================================
-// 기술(스킬) 저장소 — DB 구현 (뼈대)
+// 기술(스킬) 저장소 — Supabase 구현
 // ==========================================
 
 import { getConnection } from './connection.js';
+import { AppError } from '../../lib/AppError.js';
 
 export const skillsRepository = {
   async find() {
-    const db = await getConnection();
+    const supabase = getConnection();
+    const { data, error } = await supabase
+      .from('skills')
+      .select('data')
+      .eq('id', 1)
+      .maybeSingle();
 
-    // MongoDB 예시
-    // const groups = await db.collection('skill_groups').find({}).toArray();
-    // const tags   = await db.collection('skill_tags').distinct('name');
-    // return { groups, tags };
+    if (error) throw new AppError(error.message, { status: 500, code: 'DB_ERROR', cause: error });
+    if (!data) {
+      throw new AppError('skills 테이블에 데이터가 없습니다. backend/supabase/schema.sql을 실행했는지 확인하세요.', {
+        status: 500,
+        code: 'DB_EMPTY'
+      });
+    }
 
-    throw new Error('skillsRepository.find()를 구현하세요. (connection: ' + typeof db + ')');
+    return data.data;
   }
 };

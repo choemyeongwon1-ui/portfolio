@@ -27,9 +27,16 @@ services:
       - key: NODE_ENV
         value: "production"
       - key: DATA_SOURCE
-        value: "json"
+        value: "db"
       - key: SERVE_FRONTEND
         value: "false"
+      # Supabase 연결 정보. URL은 비밀이 아니라 여기 적어도 되지만,
+      # SERVICE_KEY는 RLS를 우회하는 비밀 키라서 sync: false로 두고
+      # Render 대시보드(Environment 탭)에서 직접 입력한다.
+      - key: SUPABASE_URL
+        value: "https://netwebcvxypucwntyhmr.supabase.co"
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
       # 방문 예약은 방문자가 실시간으로 보내는 것이라 Render에만 존재한다
       # (프로젝트처럼 "로컬에서 고치고 git push" 방식이 안 통한다) —
       # 그래서 예약 관리만큼은 이 서버의 /api/admin/* 를 켜 둬야 한다.
