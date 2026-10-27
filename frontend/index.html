@@ -7,8 +7,15 @@
   <meta name="description" content="그린스마트시티학과 최명원의 포트폴리오입니다." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Gaegu:wght@300;400;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Gaegu:wght@300;400;700&family=Quicksand:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/grow.css" />
+  <link rel="stylesheet" href="assets/css/painting.css" />
+  <!-- 모션 줄이기 설정이 아닐 때만 .js 를 붙인다. 성장 구역의 스크롤 연출은 이 클래스가 있을 때만 켜지고,
+       없으면 다 자란 모습이 그대로 보인다. -->
+  <script>
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');
+  </script>
 </head>
 
 <!--
@@ -20,88 +27,10 @@
   (존재하지 않는 경로)를 부르는 바람에 데이터를 못 가져온 적이 있다 —
   같은 실수를 반복하지 않도록 비워 둔다.
 -->
-<body data-api-base="">
+<body class="painted" data-api-base="">
 
-  <!-- 햇빛 + 나무 그림자 배경 -->
-  <div class="tree-shadow-bg" aria-hidden="true">
-
-    <!-- 햇빛 패치 (밝은 얼룩들) -->
-    <svg class="shadow-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="leafBlur" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>
-        </filter>
-        <filter id="softBlur">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
-        </filter>
-        <filter id="tinyBlur">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
-        </filter>
-      </defs>
-
-      <!-- 큰 햇빛 영역 (오른쪽 상단) -->
-      <ellipse cx="1050" cy="180" rx="340" ry="260" fill="rgba(255,242,166,0.28)" filter="url(#softBlur)"/>
-      <ellipse cx="1200" cy="80"  rx="200" ry="150" fill="rgba(255,248,200,0.22)" filter="url(#softBlur)"/>
-
-      <!-- 왼쪽 산란광 -->
-      <ellipse cx="120"  cy="400" rx="180" ry="220" fill="rgba(255,242,166,0.15)" filter="url(#softBlur)"/>
-
-      <!-- 나뭇잎 그림자들 (작은 얼룩) -->
-      <ellipse cx="820" cy="120" rx="55" ry="38" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(-20,820,120)"/>
-      <ellipse cx="870" cy="80"  rx="40" ry="28" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(15,870,80)"/>
-      <ellipse cx="920" cy="150" rx="60" ry="35" fill="rgba(90,120,70,0.10)" filter="url(#leafBlur)" transform="rotate(-35,920,150)"/>
-      <ellipse cx="780" cy="200" rx="45" ry="30" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(25,780,200)"/>
-      <ellipse cx="960" cy="200" rx="50" ry="32" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(-10,960,200)"/>
-      <ellipse cx="1000" cy="130" rx="38" ry="26" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(40,1000,130)"/>
-      <ellipse cx="850" cy="260" rx="52" ry="33" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(-28,850,260)"/>
-      <ellipse cx="1040" cy="280" rx="44" ry="28" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(18,1040,280)"/>
-      <ellipse cx="730" cy="150" rx="36" ry="24" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-42,730,150)"/>
-      <ellipse cx="910" cy="320" rx="48" ry="30" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(12,910,320)"/>
-      <ellipse cx="1080" cy="360" rx="42" ry="27" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-22,1080,360)"/>
-      <ellipse cx="760" cy="310" rx="50" ry="34" fill="rgba(90,120,70,0.09)" filter="url(#leafBlur)" transform="rotate(32,760,310)"/>
-      <ellipse cx="600" cy="180" rx="40" ry="26" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(-15,600,180)"/>
-      <ellipse cx="540" cy="240" rx="34" ry="22" fill="rgba(90,120,70,0.05)" filter="url(#leafBlur)" transform="rotate(28,540,240)"/>
-      <ellipse cx="660" cy="280" rx="38" ry="24" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(-38,660,280)"/>
-      <ellipse cx="180" cy="200" rx="44" ry="30" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(20,180,200)"/>
-      <ellipse cx="220" cy="300" rx="50" ry="32" fill="rgba(90,120,70,0.08)" filter="url(#leafBlur)" transform="rotate(-30,220,300)"/>
-      <ellipse cx="140" cy="350" rx="36" ry="24" fill="rgba(90,120,70,0.06)" filter="url(#leafBlur)" transform="rotate(45,140,350)"/>
-      <ellipse cx="300" cy="250" rx="42" ry="28" fill="rgba(90,120,70,0.07)" filter="url(#leafBlur)" transform="rotate(-18,300,250)"/>
-
-      <!-- 가지 그림자 -->
-      <path d="M680,0 Q820,80 900,60 Q980,40 1080,90 Q1160,130 1200,200" stroke="rgba(70,100,55,0.07)" stroke-width="14" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
-      <path d="M900,60 Q960,20 1020,10" stroke="rgba(70,100,55,0.06)" stroke-width="10" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
-      <path d="M820,80 Q840,30 880,20" stroke="rgba(70,100,55,0.06)" stroke-width="8" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
-      <path d="M0,300 Q80,220 160,260 Q220,200 280,230" stroke="rgba(70,100,55,0.06)" stroke-width="12" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
-      <path d="M160,260 Q130,180 150,120" stroke="rgba(70,100,55,0.05)" stroke-width="8" fill="none" filter="url(#leafBlur)" stroke-linecap="round"/>
-    </svg>
-
-    <!-- 왼쪽 나뭇가지 실루엣 -->
-    <svg class="branch-left" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
-      <path d="M-20,500 Q30,380 60,280 Q90,180 80,100 Q70,40 120,0" stroke="rgba(80,110,60,0.18)" stroke-width="16" fill="none" stroke-linecap="round"/>
-      <path d="M65,260 Q120,200 180,190 Q240,180 290,150" stroke="rgba(80,110,60,0.13)" stroke-width="9" fill="none" stroke-linecap="round"/>
-      <path d="M70,180 Q130,140 170,100 Q200,70 240,50" stroke="rgba(80,110,60,0.11)" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <path d="M180,190 Q200,140 210,110" stroke="rgba(80,110,60,0.10)" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path d="M240,160 Q270,120 280,90" stroke="rgba(80,110,60,0.09)" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <path d="M290,150 Q320,110 340,80" stroke="rgba(80,110,60,0.08)" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <ellipse cx="300" cy="140" rx="32" ry="22" fill="rgba(80,110,60,0.10)" transform="rotate(-20,300,140)"/>
-      <ellipse cx="250" cy="45"  rx="28" ry="20" fill="rgba(80,110,60,0.09)" transform="rotate(15,250,45)"/>
-      <ellipse cx="210" cy="100" rx="24" ry="16" fill="rgba(80,110,60,0.08)" transform="rotate(-30,210,100)"/>
-      <ellipse cx="350" cy="75"  rx="26" ry="18" fill="rgba(80,110,60,0.08)" transform="rotate(25,350,75)"/>
-      <ellipse cx="280" cy="85"  rx="20" ry="14" fill="rgba(80,110,60,0.07)" transform="rotate(-10,280,85)"/>
-    </svg>
-
-    <!-- 오른쪽 나뭇가지 실루엣 -->
-    <svg class="branch-right" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
-      <path d="M420,500 Q370,380 340,280 Q310,180 320,100 Q330,40 280,0" stroke="rgba(80,110,60,0.15)" stroke-width="16" fill="none" stroke-linecap="round"/>
-      <path d="M335,260 Q280,200 220,185 Q160,170 110,145" stroke="rgba(80,110,60,0.11)" stroke-width="9" fill="none" stroke-linecap="round"/>
-      <path d="M330,175 Q270,135 230,95 Q200,65 160,45" stroke="rgba(80,110,60,0.09)" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <path d="M220,185 Q200,135 190,105" stroke="rgba(80,110,60,0.08)" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path d="M160,155 Q130,115 120,85" stroke="rgba(80,110,60,0.07)" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <ellipse cx="110" cy="135" rx="30" ry="20" fill="rgba(80,110,60,0.09)" transform="rotate(20,110,135)"/>
-      <ellipse cx="165" cy="40"  rx="26" ry="18" fill="rgba(80,110,60,0.08)" transform="rotate(-15,165,40)"/>
-      <ellipse cx="190" cy="100" rx="22" ry="15" fill="rgba(80,110,60,0.07)" transform="rotate(30,190,100)"/>
-    </svg>
-  </div>
+  <!-- 위쪽에 가늘게 보이는 스크롤 진행선 -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
   <!-- 데이터를 불러오지 못했을 때만 보이는 안내 -->
   <div class="app-error" id="appError" role="alert" hidden></div>
@@ -111,11 +40,13 @@
     <div class="nav-brand" id="navBrand">MW 🌿</div>
     <ul class="nav-links">
       <li><a href="#hero"     class="nav-link">홈</a></li>
+      <li><a href="#grow"     class="nav-link">성장</a></li>
       <li><a href="#about"    class="nav-link">소개</a></li>
       <li><a href="#skills"   class="nav-link">기술</a></li>
       <li><a href="#projects" class="nav-link">프로젝트</a></li>
       <li><a href="#contact"  class="nav-link">연락처</a></li>
-      <li><a href="visit.html" class="nav-link nav-link-cta">📍 찾아오는 길</a></li>
+      <li><a href="visit.html" class="nav-link">찾아오는 길</a></li>
+      <li><a href="reserve.html" class="nav-link nav-link-cta">방문 예약</a></li>
     </ul>
     <div class="nav-right">
       <div class="share-wrap">
@@ -124,11 +55,11 @@
         </button>
         <div class="share-menu" id="shareMenu" role="menu" hidden>
           <button class="share-item" id="shareLinkBtn" type="button" role="menuitem">
-            <span aria-hidden="true">🔗</span>
+            
             <span><strong>링크 공유</strong><small>이 페이지 주소를 복사합니다</small></span>
           </button>
           <button class="share-item" id="sharePdfBtn" type="button" role="menuitem">
-            <span aria-hidden="true">📄</span>
+            
             <span><strong>PDF 공유</strong><small>핵심 내용만 문서로 저장합니다</small></span>
           </button>
         </div>
@@ -141,31 +72,52 @@
 
   <!-- 히어로 섹션 — 내용은 /api/profile 에서 채워진다 -->
   <section class="hero" id="hero">
+    <div class="hero-light" aria-hidden="true"></div>
     <div class="hero-content">
       <div class="hero-tag" id="heroTag"></div>
       <h1 class="hero-title" id="heroTitle"></h1>
       <p class="hero-desc" id="heroDesc"></p>
       <div class="hero-btns">
         <a href="#about"   class="btn btn-solid" id="heroAboutBtn">저를 알아보세요</a>
-        <a href="#contact" class="btn btn-ghost" id="heroContactBtn">연락해요 ✉️</a>
+        <a href="#contact" class="btn btn-ghost" id="heroContactBtn">연락해요</a>
+        <a href="reserve.html" class="btn btn-ghost">방문 예약</a>
       </div>
     </div>
-
     <div class="hero-card-wrap">
       <div class="profile-card">
         <div class="avatar-wrap">
           <div class="avatar">
             <span id="avatarName"></span>
           </div>
-          <div class="avatar-deco">🌿</div>
+          
         </div>
         <div class="card-divider"></div>
         <ul class="card-info-list" id="profileCardList"></ul>
       </div>
-      <!-- 카드 주변 장식 -->
-      <div class="deco-leaf deco-1">🍃</div>
-      <div class="deco-leaf deco-2">🌿</div>
-      <div class="deco-leaf deco-3">🌱</div>
+    </div>
+  </section>
+
+    <!-- 성장 무대 — 스크롤하면 씨앗이 심기고 식물이 피어난다 -->
+  <section class="grow" id="grow" aria-label="씨앗에서 자라는 과정">
+    <div class="grow-stage">
+      <div class="marquee" aria-hidden="true">
+        <span>SOW · GROW&nbsp;</span><span>SOW · GROW&nbsp;</span><span>SOW · GROW&nbsp;</span><span>SOW · GROW&nbsp;</span><span>SOW · GROW&nbsp;</span><span>SOW · GROW&nbsp;</span>
+      </div>
+      <div class="grow-art" id="growArt">
+        <span class="g-glow"></span>
+        <!-- JS가 켜져 있으면 캔버스에 직접 그려 스크롤에 맞춰 자란다. 꺼져 있으면 아래 그림(활짝 핀 모습)이 보인다. -->
+        <canvas id="growCanvas" aria-hidden="true"></canvas>
+        <img class="grow-static" src="assets/img/shrub-bloom.webp" alt="하얀 꽃이 가득 핀 나무" width="1000" height="1000" />
+      </div>
+      <div class="stage-label">
+        <span class="stage-kicker">✦ 성장 ✦</span>
+        <strong>씨앗에서 겨울까지</strong>
+        <span class="stage-hint">스크롤하면 계절이 흐릅니다</span>
+      </div>
+      <div class="stage-readout" aria-live="off">
+        <span>GROWTH <b id="growPct">100</b> %</span>
+        <span id="growStage">06 / 06 — 개화 · Bloom</span>
+      </div>
     </div>
   </section>
 
@@ -223,7 +175,7 @@
     <div class="container">
       <div class="section-header">
         <span class="sec-label">✦ 같이해요 ✦</span>
-        <h2 class="sec-title">같이 이야기해요 ☕</h2>
+        <h2 class="sec-title">같이 이야기해요</h2>
       </div>
       <div class="contact-wrap">
         <div class="contact-cards" id="contactCards"></div>
@@ -232,7 +184,8 @@
         </div>
       </div>
       <div class="contact-visit-cta">
-        <a class="btn btn-solid" href="visit.html">📍 찾아오는 길 보기</a>
+        <a class="btn btn-solid" href="reserve.html">방문 예약하기</a>
+        <a class="btn btn-ghost" href="visit.html">찾아오는 길 보기</a>
       </div>
     </div>
   </section>
@@ -240,9 +193,20 @@
   <!-- 푸터 -->
   <footer class="footer">
     <div class="footer-inner">
-      <p class="footer-name" id="footerName"></p>
-      <p class="footer-info" id="footerInfo"></p>
-      <p class="footer-copy" id="footerCopy"></p>
+      <a class="footer-brand" href="#hero" aria-label="맨 위로">MW<span>.</span></a>
+      <nav class="footer-links" aria-label="바로가기">
+        <a href="#about">소개</a>
+        <a href="#grow">성장</a>
+        <a href="#skills">기술</a>
+        <a href="#projects">프로젝트</a>
+        <a href="reserve.html">방문 예약</a>
+        <a href="visit.html">찾아오는 길</a>
+      </nav>
+      <div class="footer-meta">
+        <p class="footer-name" id="footerName"></p>
+        <p class="footer-info" id="footerInfo"></p>
+        <p class="footer-copy" id="footerCopy"></p>
+      </div>
     </div>
   </footer>
 

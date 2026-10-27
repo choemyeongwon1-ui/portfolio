@@ -6,6 +6,7 @@
 // ==========================================
 
 import { el, render, $ } from '../lib/dom.js';
+import { plain } from '../lib/text.js';
 
 function skillItem(item) {
   return el('div', {
@@ -28,9 +29,7 @@ function skillGroup(group) {
     className: 'skill-box',
     attrs: { id: group.id },
     children: [
-      el('h3', {
-        children: [el('span', { text: group.emoji }), document.createTextNode(` ${group.title}`)]
-      }),
+      el('h3', { text: plain(group.title) }),
       el('div', {
         className: 'skill-list',
         children: (group.items ?? []).map(skillItem)

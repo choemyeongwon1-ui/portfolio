@@ -20,6 +20,8 @@ import { renderSkills } from './render/skills.render.js';
 import { initNavbar } from './features/navbar.js';
 import { observeReveal, bindTagHover, initPageFade, initHeroEntrance } from './features/reveal.js';
 import { initProjects } from './features/projects.js';
+import { initGrowScroll } from './features/grow.js';
+import { initEffects } from './features/effects.js';
 import { initShare } from './features/share.js';
 import { initPdf, printPdf } from './features/pdf.js';
 
@@ -63,6 +65,12 @@ async function start() {
   // 데이터가 없어도 동작하는 기능은 먼저 켠다.
   initNavbar();
   initShare({ onPdfRequest: printPdf });
+  initGrowScroll();
+  initEffects();
+
+  // 표지(글·프로필 카드)는 데이터 응답을 끝까지 기다리지 않는다.
+  // 서버가 느리거나 실패해도 1초 안에는 나타나게 한다 (내용은 도착하는 대로 채워진다).
+  setTimeout(initHeroEntrance, 900);
 
   try {
     await loadData();
@@ -82,11 +90,13 @@ async function start() {
       } catch (secondError) {
         showFatalError(secondError.message);
         showToast('데이터를 불러오지 못했습니다.');
+        initHeroEntrance();
         return;
       }
     } else {
       showFatalError(firstError.message);
       showToast('데이터를 불러오지 못했습니다.');
+      initHeroEntrance();
       return;
     }
   }

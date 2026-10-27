@@ -1,0 +1,746 @@
+/* ==========================================
+   Painting — 인상주의 풍경화 느낌
+   ------------------------------------------
+   푸른 하늘의 뭉게구름, 짙은 숲, 분홍·노란 들꽃이 핀 풀밭, 파란 개울.
+   body.painted 아래에서만 적용되므로 같은 style.css 를 쓰는
+   예약·찾아오는 길 페이지는 그대로다.
+   ========================================== */
+
+body.painted {
+  /* 그림에서 뽑은 팔레트 */
+  --matcha:      #8db04a;   /* 풀밭 */
+  --linden:      #c9d98a;
+  --citron:      #ebd95a;   /* 노란 들꽃 */
+  --kiwi:        #e6edc0;
+  --green-latte: #9db38a;
+
+  --sky:         #7fa9d1;
+  --sky-pale:    #dce9f2;
+  --stream:      #4a78a8;
+  --pink:        #d78ba7;   /* 분홍 들꽃 */
+  --pink-dk:     #b3557d;
+  --earth:       #b4694b;
+
+  --bg:          #f6f3e4;   /* 캔버스 바탕 */
+  --bg2:         #efebd6;
+  --bg-card:     #fffdf3;
+  --bg-section:  #edebd3;
+
+  --primary:     #3f7545;   /* 숲 */
+  --primary-dk:  #2c5733;
+  --text:        #26382a;
+  --text-sub:    #51684f;
+  --text-light:  #7f9479;
+  --text-warm:   #6f7f55;
+
+  --border:      rgba(63, 117, 69, 0.18);
+  --border-g:    rgba(63, 117, 69, 0.3);
+
+  --shadow-soft: 0 4px 22px rgba(38, 70, 44, 0.1);
+  --shadow-card: 0 10px 38px rgba(38, 70, 44, 0.14);
+
+  --serif: 'IBM Plex Sans KR', 'Noto Sans KR', 'Nanum Gothic', sans-serif;
+  --sans:  'IBM Plex Sans KR', 'Noto Sans KR', 'Nanum Gothic', sans-serif;
+
+  font-family: var(--sans);
+  background-color: var(--bg);
+}
+
+/* 캔버스 천 같은 결 — 화면 전체에 아주 옅게 */
+body.painted::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.42  0 0 0 0 0.34  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- 글꼴: 제목은 명조, 나머지는 고딕 ---------- */
+body.painted .nav-brand,
+body.painted .hero-title,
+body.painted .sec-title,
+body.painted .doc-header h2,
+body.painted .acard h3,
+body.painted .skill-box h3,
+body.painted .proj-card h3,
+body.painted .msg-hi,
+body.painted .footer-name,
+body.painted .stage-label strong,
+body.painted .marquee {
+  font-family: var(--serif);
+  font-weight: 700;
+}
+body.painted .hero-tag,
+body.painted .btn,
+body.painted .avatar,
+body.painted .sec-label,
+body.painted .tag,
+body.painted .stage-kicker,
+body.painted .stage-readout {
+  font-family: var(--sans);
+  font-weight: 700;
+}
+body.painted .nav-link,
+body.painted .share-btn,
+body.painted .share-item,
+body.painted .card-info-list strong,
+body.painted .info-item span { font-family: var(--sans); }
+
+body.painted .hero-title {
+  font-size: clamp(1.9rem, 3.7vw, 3rem);
+  letter-spacing: -0.5px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+body.painted .hero-title em::after { background: rgba(215, 139, 167, 0.5); }
+body.painted .sec-label { color: var(--pink-dk); letter-spacing: 3px; }
+body.painted .sec-title { color: var(--text); }
+
+/* ---------- 네비게이션 ---------- */
+body.painted .navbar {
+  background: rgba(246, 243, 228, 0.8);
+  border-bottom-color: rgba(63, 117, 69, 0.22);
+}
+body.painted .navbar.scrolled {
+  background: rgba(246, 243, 228, 0.94);
+  box-shadow: 0 2px 20px rgba(38, 70, 44, 0.1);
+}
+body.painted .nav-link::after { background: var(--pink); }
+body.painted .nav-link-cta { box-shadow: 0 3px 14px rgba(44, 87, 51, 0.35); }
+
+/* ---------- 표지: 풍경화 위에 종이 라벨처럼 글을 얹는다 ---------- */
+body.painted .hero {
+  background-color: #8fb5d8;
+  /* 종이색 베일로 덮어 그림을 은은하게 (원본 그림은 그대로) */
+  background-image:
+    linear-gradient(rgba(246, 243, 228, 0.52), rgba(246, 243, 228, 0.52)),
+    url('../img/painting-landscape.webp');
+  background-size: cover;
+  background-position: center bottom;
+}
+body.painted .hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 16%;
+  background: linear-gradient(to bottom, rgba(246, 243, 228, 0), var(--bg));
+  pointer-events: none;
+}
+body.painted .hero-content {
+  max-width: 580px;
+  padding: 2.4rem 2.6rem 2.6rem;
+  background: rgba(250, 247, 233, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 14px 44px rgba(28, 56, 40, 0.22);
+}
+body.painted .hero-tag {
+  background: rgba(215, 139, 167, 0.18);
+  border-color: rgba(179, 85, 125, 0.4);
+  color: var(--pink-dk);
+}
+body.painted .btn-solid { box-shadow: 0 4px 18px rgba(44, 87, 51, 0.35); }
+body.painted .btn-ghost { background: #fffdf3; }
+
+body.painted .profile-card {
+  background: rgba(252, 250, 238, 0.9);
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow-card), 0 0 0 8px rgba(255, 253, 243, 0.25);
+}
+body.painted .profile-card::before {
+  background: linear-gradient(90deg, var(--matcha), var(--citron), var(--pink));
+}
+body.painted .avatar { background: linear-gradient(135deg, var(--primary) 0%, var(--matcha) 100%); }
+
+/* ---------- 구역 배경과 카드 ---------- */
+body.painted .about { background: rgba(232, 229, 202, 0.5); }
+body.painted .projects { background: rgba(246, 243, 228, 0.55); }
+body.painted .acard,
+body.painted .info-table,
+body.painted .skill-box,
+body.painted .ct-card,
+body.painted .msg-bubble,
+body.painted .tag { background: rgba(255, 253, 243, 0.88); }
+body.painted .proj-card { background: rgba(255, 253, 243, 0.62); }
+/* 카드 아래 선(마우스를 올리면 나타남)은 은은한 한 줄로 */
+body.painted .acard::after {
+  height: 2px;
+  background: linear-gradient(90deg, rgba(141, 176, 74, 0), rgba(141, 176, 74, 0.5) 35%, rgba(215, 139, 167, 0.5) 70%, rgba(215, 139, 167, 0));
+}
+body.painted .sk-fill { background: linear-gradient(90deg, #8aab62, #b3c872, #e3dd8a); }
+body.painted .sk-fill::after { background: var(--pink); box-shadow: 0 0 6px rgba(215, 139, 167, 0.6); }
+body.painted .sk-bar { background: rgba(63, 117, 69, 0.12); }
+body.painted .skill-box h3 { border-bottom-color: rgba(63, 117, 69, 0.3); }
+body.painted .proj-tag { color: var(--pink-dk); }
+
+/* ---------- 소개~연락 구역: 한 장의 그림이 이어진다 ----------
+   그림을 화면에 고정(fixed)해 두고 구역들이 그 위로 지나가게 한다.
+   구역마다 따로 번지게 하면 경계마다 허연 띠가 생기고 그림이 뚝 끊겨 보이므로,
+   위쪽(소개 시작)과 아래쪽(연락 끝)만 종이색으로 번지게 한다. */
+body.painted .about,
+body.painted .skills,
+body.painted .projects,
+body.painted .contact { isolation: isolate; }
+
+body.painted .about::before,
+body.painted .skills::before,
+body.painted .projects::before,
+body.painted .contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('../img/painting-birch.webp') center / cover no-repeat fixed;
+  opacity: 0.34;
+  pointer-events: none;
+}
+body.painted .about::before {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 160px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 160px);
+}
+body.painted .contact::before {
+  -webkit-mask-image: linear-gradient(to top, transparent 0, #000 160px);
+  mask-image: linear-gradient(to top, transparent 0, #000 160px);
+}
+/* 구역 자체의 반투명 바탕은 걷어 그림이 비치게 한다 */
+body.painted .about,
+body.painted .projects { background: transparent; }
+
+/* ---------- 푸터: 은은한 풍경 위의 단정한 마무리 ---------- */
+body.painted .footer {
+  position: relative;
+  border-top: 0; /* 기본 스타일의 진한 가로선 제거 */
+  padding: clamp(5rem, 9vw, 7rem) 6% 2.2rem;
+  color: var(--text);
+  background:
+    linear-gradient(to bottom, var(--bg) 0%, rgba(246, 243, 228, 0) 60%),
+    linear-gradient(rgba(246, 243, 228, 0.62), rgba(246, 243, 228, 0.78)),
+    url('../img/painting-landscape.webp') center 72% / cover no-repeat;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.painted .footer-inner { gap: 1.5rem; max-width: 960px; margin: 0 auto; }
+
+body.painted .footer-brand {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary);
+  text-decoration: none;
+}
+body.painted .footer-brand span { color: var(--pink-dk); }
+
+body.painted .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.7rem; }
+body.painted .footer-links a {
+  position: relative;
+  padding: 4px 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+body.painted .footer-links a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--pink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body.painted .footer-links a:hover { color: var(--primary-dk); }
+body.painted .footer-links a:hover::after { transform: scaleX(1); }
+
+body.painted .footer-meta {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.2rem 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(63, 117, 69, 0.2);
+}
+body.painted .footer-name { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--text); }
+body.painted .footer-info,
+body.painted .footer-copy {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  text-shadow: none;
+}
+
+/* ---------- 성장 무대: 들꽃 핀 풀밭 위에서 자란다 ---------- */
+/* 배경 그림은 종이색 베일로 덮고, 나무가 서 있는 가운데는 더 비워 둔다 —
+   하얀 줄기와 자라는 과정이 또렷이 보이도록. */
+body.painted .grow-stage {
+  background:
+    radial-gradient(ellipse 30% 56% at 47% 58%, rgba(246, 243, 228, 0.55) 0%, rgba(246, 243, 228, 0) 100%),
+    linear-gradient(to bottom, var(--bg) 0, rgba(246, 243, 228, 0) 12%, rgba(246, 243, 228, 0) 88%, var(--bg) 100%),
+    linear-gradient(rgba(246, 243, 228, 0.42), rgba(246, 243, 228, 0.42)),
+    url('../img/painting-birch.webp') 62% 68% / cover;
+}
+body.painted .marquee {
+  top: 26%;
+  color: #ffffff;
+  opacity: 0.8;
+  text-shadow: 0 2px 20px rgba(80, 120, 160, 0.3);
+}
+body.painted .g-glow {
+  background: radial-gradient(ellipse at 58% 40%, rgba(255, 250, 215, 0.55), rgba(255, 250, 215, 0) 62%);
+}
+body.painted .stage-label,
+body.painted .stage-readout {
+  padding: 0.7rem 1.1rem;
+  background: rgba(250, 247, 233, 0.86);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(28, 56, 40, 0.18);
+}
+body.painted .stage-kicker { color: var(--pink-dk); }
+body.painted .stage-readout b { color: var(--pink-dk); }
+
+@media (max-width: 900px) {
+  body.painted .hero { background-position: 62% bottom; }
+  body.painted .hero-content { padding: 1.8rem 1.4rem 2rem; }
+}
+
+/* ---------- 찾아오는 길 · 방문 예약 페이지 ----------
+   같은 팔레트·글꼴 위에, 그림을 종이색 베일로 덮어 은은하게 깐다. */
+body.painted.page {
+  background:
+    linear-gradient(rgba(246, 243, 228, 0.78), rgba(246, 243, 228, 0.84)),
+    url('../img/painting-birch.webp') center top / cover fixed;
+  min-height: 100vh;
+}
+body.painted.page h1,
+body.painted.page h2,
+body.painted.page .visit-header h1 { font-family: var(--serif); font-weight: 700; }
+body.painted.page .visit-card,
+body.painted.page .reserve-card { background: rgba(255, 253, 243, 0.9); }
+body.painted.page .visit-reserve-btn { box-shadow: 0 4px 18px rgba(44, 87, 51, 0.3); }
+
+/* ==========================================
+   변화와 효과
+   ========================================== */
+
+/* ---------- 위쪽 스크롤 진행선 ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 1100;
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, var(--primary), var(--matcha), var(--pink));
+  pointer-events: none;
+}
+
+/* ---------- 이모지를 걷은 자리의 정리 ---------- */
+body.painted .brand-dot { color: var(--pink-dk); }
+body.painted .acard-no {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  color: var(--pink-dk);
+}
+body.painted .card-info-list li { gap: 0; }
+
+/* ---------- 등장 효과: 양옆에서 날아오는 대신 차분하게 떠오른다 ---------- */
+body.painted .reveal {
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body.painted .reveal-left,
+body.painted .reveal-right { transform: translateY(34px); }
+body.painted .reveal-scale { transform: translateY(24px) scale(0.97); }
+body.painted .reveal.visible { transform: none; }
+
+body.painted .hero-content,
+body.painted .hero-card-wrap { transform: translateY(36px); }
+body.painted.hero-in .hero-content,
+body.painted.hero-in .hero-card-wrap { transform: none; }
+
+/* ---------- 표지: 그림이 천천히 숨 쉬고, 스크롤보다 느리게 따라온다 ---------- */
+body.painted .hero {
+  background-image: none;
+  background-color: #cfdcd2;
+  overflow: clip;
+  isolation: isolate;
+}
+body.painted .hero::before {
+  content: '';
+  position: absolute;
+  inset: -4% -3% -2%;
+  z-index: 0;
+  background:
+    linear-gradient(rgba(246, 243, 228, 0.52), rgba(246, 243, 228, 0.52)),
+    url('../img/painting-landscape.webp') center bottom / cover no-repeat;
+  translate: 0 var(--hy, 0px);
+  scale: 1.04;
+  animation: heroBreath 40s ease-in-out infinite alternate;
+  will-change: translate, scale;
+}
+@keyframes heroBreath { from { scale: 1.04; } to { scale: 1.1; } }
+body.painted .hero::after { z-index: 1; }
+
+/* 마우스를 따라오는 햇살 */
+.hero-light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle 480px at var(--mx, 72%) var(--my, 22%), rgba(255, 247, 200, 0.5), rgba(255, 247, 200, 0) 72%);
+}
+
+/* ---------- 떠다니는 민들레 씨앗 ---------- */
+.drift {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.drift i {
+  position: absolute;
+  bottom: -6%;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><g stroke='white' stroke-width='1.1' stroke-linecap='round' fill='none'><path d='M20 38 Q19 26 20 17'/><path d='M20 17 L9 9 M20 17 L12 5 M20 17 L18 3 M20 17 L23 3 M20 17 L28 5 M20 17 L31 9 M20 17 L7 14 M20 17 L33 14'/></g><g fill='white'><circle cx='9' cy='9' r='1.3'/><circle cx='12' cy='5' r='1.3'/><circle cx='18' cy='3' r='1.3'/><circle cx='23' cy='3' r='1.3'/><circle cx='28' cy='5' r='1.3'/><circle cx='31' cy='9' r='1.3'/></g></svg>") center / contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(50, 80, 50, 0.4));
+  animation: seedFloat var(--dur) linear var(--delay) infinite;
+}
+@keyframes seedFloat {
+  0%   { transform: translate3d(0, 0, 0) rotate(-8deg); opacity: 0; }
+  8%   { opacity: 0.85; }
+  50%  { transform: translate3d(calc(var(--dx) * 0.5), -55vh, 0) rotate(10deg); }
+  92%  { opacity: 0.85; }
+  100% { transform: translate3d(var(--dx), -112vh, 0) rotate(-6deg); opacity: 0; }
+}
+
+/* ---------- 구역 제목 밑에 붓으로 긋는 선 ---------- */
+body.painted .section-header .sec-title::after {
+  content: '';
+  display: block;
+  width: 150px;
+  height: 12px;
+  margin: 0.7rem auto 0;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 12' preserveAspectRatio='none'><path d='M3 8 C28 3 52 10 80 6 S128 3 147 7' fill='none' stroke='%23d78ba7' stroke-width='4' stroke-linecap='round' opacity='.75'/><path d='M10 9 C40 6 70 10 120 7' fill='none' stroke='%238db04a' stroke-width='2' stroke-linecap='round' opacity='.6'/></svg>") center / 100% 100% no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+body.painted .section-header.visible .sec-title::after { clip-path: inset(0 0 0 0); }
+
+/* ---------- 카드: 마우스를 올리면 살짝 기울며 떠오른다 ---------- */
+body.painted .tilt-card { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease; }
+body.painted .tilt-card.is-tilting {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-5px) !important;
+  transition: transform 0.12s ease-out, box-shadow 0.4s ease;
+  box-shadow: 0 20px 44px rgba(38, 70, 44, 0.2);
+}
+
+/* ---------- 구역마다 다른 분위기 ---------- */
+/* 기술: 하늘빛이 도는 옅은 톤 — 구름 낀 풍경이 은은하게 비친다 */
+body.painted .skills::before {
+  background:
+    linear-gradient(rgba(226, 236, 244, 0.6), rgba(232, 240, 244, 0.66)),
+    url('../img/painting-landscape.webp') center top / cover no-repeat fixed;
+  opacity: 0.78;
+}
+
+/* 연락: 분홍빛이 도는 풀밭 */
+body.painted .contact::before {
+  background:
+    linear-gradient(rgba(248, 232, 236, 0.55), rgba(248, 232, 236, 0.55)),
+    url('../img/painting-landscape.webp') center / cover no-repeat fixed;
+  opacity: 0.66;
+}
+
+@media (max-width: 900px) {
+  body.painted .hero::before { background-position: 62% bottom; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.painted .hero::before { animation: none; }
+  .drift { display: none; }
+}
+
+/* ---------- 구역 사이를 자연스럽게 이어 주기 ----------
+   각 구역의 배경을 이웃 구역 쪽으로 --blend 만큼 늘려 겹치고, 겹친 부분을 서서히 번지게 한다.
+   (칠한 색이 구역 경계에서 뚝 끊기지 않고 교차하며 바뀐다.)
+   배경 층은 모든 글자·카드보다 뒤에 있어야 하므로, 구역이 따로 쌓임 맥락을 만들지 않게 한다. */
+body.painted { --blend: 220px; }
+
+body.painted .about,
+body.painted .skills,
+body.painted .projects,
+body.painted .contact {
+  isolation: auto;
+  z-index: auto;
+}
+
+body.painted .about::before {
+  inset: 0 0 calc(var(--blend) * -1) 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 160px, #000 calc(100% - var(--blend)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 160px, #000 calc(100% - var(--blend)), transparent 100%);
+}
+body.painted .skills::before,
+body.painted .projects::before {
+  inset: calc(var(--blend) * -1) 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--blend), #000 calc(100% - var(--blend)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--blend), #000 calc(100% - var(--blend)), transparent 100%);
+}
+body.painted .contact::before {
+  inset: calc(var(--blend) * -1) 0 0 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--blend), #000 calc(100% - 160px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--blend), #000 calc(100% - 160px), transparent 100%);
+}
+
+/* ---------- 글꼴 조정 ---------- */
+body.painted .nav-brand { font-size: 1.7rem; font-weight: 700; letter-spacing: 0.5px; }
+body.painted .marquee { font-weight: 600; letter-spacing: 0; }
+body.painted .hero-title,
+body.painted .sec-title,
+body.painted .doc-header h2 { font-weight: 600; }
+body.painted .acard h3,
+body.painted .skill-box h3,
+body.painted .proj-card h3,
+body.painted .msg-hi { font-weight: 600; }
+body.painted { font-weight: 400; letter-spacing: -0.01em; }
+
+/* 한글은 단어 단위로 줄을 바꾸고, 숫자는 같은 높이의 숫자체로 */
+body.painted p,
+body.painted h1,
+body.painted h2,
+body.painted h3,
+body.painted li,
+body.painted label { word-break: keep-all; overflow-wrap: break-word; }
+body.painted .acard-no,
+body.painted .figure-num,
+body.painted .stage-readout,
+body.painted .card-info-list strong,
+body.painted .info-item span { font-variant-numeric: lining-nums tabular-nums; }
+body.painted .acard-no { font-feature-settings: 'lnum' 1; }
+
+/* 프로필 카드는 표지 등장 효과 하나만 따른다 (이중으로 숨겨져 늦게 나타나던 문제) */
+body.painted .profile-card.reveal { opacity: 1; transform: none; transition: none; }
+
+.contact-visit-cta { gap: 0.9rem; flex-wrap: wrap; }
+
+/* ---------- 글꼴 조정: Hahmlet(제목) + SUIT(본문) ---------- */
+body.painted .nav-brand { font-size: 1.45rem; font-weight: 700; letter-spacing: 0; }
+body.painted .marquee { font-weight: 600; }
+body.painted .hero-title,
+body.painted .sec-title,
+body.painted .doc-header h2 { font-weight: 600; letter-spacing: -0.02em; }
+body.painted .acard-no { font-size: 1.25rem; letter-spacing: 0.06em; font-weight: 500; }
+body.painted { letter-spacing: -0.005em; }
+
+/* ---------- 뒤에서 흐르는 큰 글자: 가늘게 ---------- */
+body.painted .marquee {
+  font-family: 'Cormorant Garamond', 'Hahmlet', serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  text-shadow: none;
+}
+
+
+/* ==========================================
+   유리처럼 투명한 버튼과 카드
+   ------------------------------------------
+   배경 그림이 비쳐 보이도록 반투명 + 흐림(backdrop-filter),
+   테두리는 가는 흰 선과 안쪽 윗면 하이라이트로 세련되게.
+   ========================================== */
+body.painted {
+  --glass-bg: rgba(255, 253, 244, 0.34);
+  --glass-bg-strong: rgba(255, 253, 244, 0.5);
+  --glass-line: rgba(255, 255, 255, 0.62);
+  --glass-blur: blur(14px) saturate(140%);
+  --glass-shadow: 0 8px 30px rgba(38, 70, 44, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ----- 카드 ----- */
+body.painted .acard,
+body.painted .info-table,
+body.painted .skill-box,
+body.painted .ct-card,
+body.painted .msg-bubble,
+body.painted .proj-card,
+body.painted .stage-label,
+body.painted .stage-readout,
+body.painted .share-menu,
+body.painted .visit-card,
+body.painted .reserve-card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-shadow);
+}
+body.painted .hero-content,
+body.painted .profile-card {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-shadow);
+}
+body.painted .info-item { background: rgba(255, 255, 255, 0.28); border: 1px solid rgba(255, 255, 255, 0.5); }
+body.painted .msg-bubble::before,
+body.painted .msg-bubble::after { display: none; }
+body.painted .sk-bar { background: rgba(255, 255, 255, 0.4); }
+body.painted .navbar,
+body.painted .navbar.scrolled {
+  background: rgba(246, 243, 228, 0.5);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* ----- 버튼 ----- */
+body.painted .btn,
+body.painted .nav-link-cta,
+body.painted .share-btn,
+body.painted .filter-btn,
+body.painted .proj-toggle,
+body.painted .tag,
+body.painted .visit-reserve-btn {
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+/* 채워진 버튼도 비치게: 숲색을 옅게 깔고 흰 테두리 */
+body.painted .btn-solid,
+body.painted .nav-link-cta,
+body.painted .visit-reserve-btn {
+  background: rgba(63, 117, 69, 0.62);
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 22px rgba(44, 87, 51, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+body.painted .btn-solid:hover,
+body.painted .nav-link-cta:hover,
+body.painted .visit-reserve-btn:hover {
+  background: rgba(63, 117, 69, 0.82);
+  transform: translateY(-2px);
+}
+/* 윤곽 버튼: 거의 투명한 유리 */
+body.painted .btn-ghost,
+body.painted .share-btn,
+body.painted .filter-btn,
+body.painted .proj-toggle,
+body.painted .tag {
+  background: rgba(255, 255, 255, 0.22);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+body.painted .btn-ghost:hover,
+body.painted .share-btn:hover,
+body.painted .filter-btn:hover,
+body.painted .proj-toggle:hover,
+body.painted .tag:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--primary-dk);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+body.painted .filter-btn.is-active {
+  background: rgba(63, 117, 69, 0.6);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+body.painted .hero-tag {
+  background: rgba(215, 139, 167, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+/* 카드 안의 입력칸도 유리처럼 */
+body.painted.page .field-input,
+body.painted.page select,
+body.painted.page textarea {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- 페이지 전체에 흩날리는 낙엽 ---------- */
+.leaf-drift {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* 나무 앞, 글상자 아래 */
+  overflow: hidden;
+  pointer-events: none;
+  /* 가을에만: 단풍이 들며 나타나고(--autumn), 눈이 내리면 사라진다(--snow) */
+  opacity: calc(var(--autumn, 0) * (1 - var(--snow, 0) * 1.6));
+}
+.leaf-drift i {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  width: var(--s);
+  height: calc(var(--s) * 0.62);
+  opacity: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 1px 1.5px rgba(70, 50, 20, 0.22));
+  animation: leafDrift var(--dur) linear var(--delay) infinite;
+  will-change: transform, opacity;
+}
+@keyframes leafDrift {
+  0%   { transform: translate3d(0, -10vh, 0) rotate(var(--rot)) rotateY(0deg); opacity: 0; }
+  5%   { opacity: 0.82; }
+  25%  { transform: translate3d(calc(var(--dx) * 0.6), 24vh, 0) rotate(calc(var(--rot) + 70deg)) rotateY(130deg); }
+  50%  { transform: translate3d(calc(var(--dx) * -0.3), 54vh, 0) rotate(calc(var(--rot) + 150deg)) rotateY(270deg); }
+  75%  { transform: translate3d(calc(var(--dx) * 0.9), 84vh, 0) rotate(calc(var(--rot) + 230deg)) rotateY(410deg); }
+  95%  { opacity: 0.82; }
+  100% { transform: translate3d(calc(var(--dx) * 0.4), 112vh, 0) rotate(calc(var(--rot) + 300deg)) rotateY(540deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .leaf-drift { display: none; }
+}
+@media print {
+  .leaf-drift { display: none !important; }
+}
+
+/* ---------- 이름·생년월일·학과·학번: 한 줄로 ---------- */
+body.painted .info-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+body.painted .info-item { padding: 0.85rem 1rem; min-width: 0; }
+body.painted .info-item span { display: block; font-size: clamp(0.82rem, 1.25vw, 0.98rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 700px) {
+  /* 아주 좁은 화면에서만 두 줄 */
+  body.painted .info-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.painted .info-item span { white-space: normal; }
+}
+
+/* ---------- 글꼴 확정: IBM Plex Sans KR 하나로 ---------- */
+body.painted .nav-brand,
+body.painted .footer-brand { font-weight: 700; letter-spacing: -0.01em; }
+body.painted .hero-title,
+body.painted .sec-title,
+body.painted .doc-header h2 { font-weight: 600; letter-spacing: -0.025em; }
+body.painted .acard h3,
+body.painted .skill-box h3,
+body.painted .proj-card h3,
+body.painted .msg-hi,
+body.painted .footer-name,
+body.painted .stage-label strong { font-weight: 600; }
+body.painted .acard-no { font-weight: 500; letter-spacing: 0.08em; }
+body.painted { font-weight: 400; letter-spacing: -0.01em; }

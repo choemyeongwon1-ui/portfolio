@@ -1,0 +1,171 @@
+/* ==========================================
+   성장 무대 — 스크롤하면 씨앗이 심기고 꽃나무가 피어난다
+   ------------------------------------------
+   섹션이 320vh 길이이고 안쪽 무대가 화면에 붙어(sticky) 있는 동안
+   스크롤 진행도가 그대로 자란 정도가 된다. (js/features/grow.js)
+   'js' 클래스가 없으면(모션 줄이기·JS 없음) 100vh 안에 활짝 핀 그림이 그대로 보인다.
+   ========================================== */
+
+.grow {
+  position: relative;
+  z-index: 1;
+}
+.js .grow { height: 560vh; }
+
+.grow-stage {
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  display: grid;
+  place-items: center;
+}
+.js .grow-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+/* 뒤에서 반대 방향으로 흐르는 큰 글자 띠 */
+.marquee {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  white-space: nowrap;
+  font-family: 'Jua', sans-serif;
+  font-size: clamp(78px, 17vw, 250px);
+  line-height: 0.9;
+  color: var(--matcha);
+  opacity: 0.28;
+  /* 스크롤 진행도만큼 한 칸(=복사본 하나, 6개 중 하나) 밀리고,
+     그와 별개로 아래 animation 이 혼자서도 계속 흘러간다 (translate 와 transform 은 합쳐진다) */
+  transform: translate3d(calc(var(--mq, 0) * -16.667%), -50%, 0);
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+.marquee span { flex: none; }
+
+/* 정사각 무대: 아래쪽 가운데가 씨앗을 심는 자리 */
+.grow-art {
+  position: relative;
+  z-index: 2;
+  width: min(74vw, 680px);
+  aspect-ratio: 1;
+  margin-top: 2vh;
+}
+.grow-art > canvas,
+.grow-art > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* 햇살이 비치는 듯한 따뜻한 빛 */
+.g-glow {
+  position: absolute;
+  inset: -8% -12% 4%;
+  background:
+    radial-gradient(ellipse at 58% 38%, rgba(255, 248, 205, 0.75), rgba(255, 248, 205, 0) 62%);
+  pointer-events: none;
+}
+/* 캔버스가 켜지면 정지 그림은 숨긴다 */
+.js .grow-art > img.grow-static { display: none; }
+.grow-art > canvas { display: none; }
+.js .grow-art > canvas { display: block; }
+
+.stage-label,
+.stage-readout {
+  position: absolute;
+  z-index: 3;
+  bottom: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Jua', sans-serif;
+}
+.stage-label { left: 8%; }
+.stage-kicker { font-size: 0.85rem; letter-spacing: 2px; color: var(--text-light); }
+.stage-label strong {
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.stage-hint { font-size: 0.9rem; color: var(--text-sub); }
+
+.stage-readout {
+  right: 8%;
+  align-items: flex-end;
+  font-size: 0.95rem;
+  color: var(--text-sub);
+}
+.stage-readout b {
+  font-weight: 400;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .grow-art { width: min(96vw, 520px); }
+  .stage-label { left: 6%; }
+  .stage-readout { right: 6%; }
+}
+
+/* 뒤 글자는 가만히 있어도 계속 흘러간다. 복사본 하나만큼 가면 처음 모습과 같아져 끊김 없이 이어진다. */
+@media (prefers-reduced-motion: no-preference) {
+  .marquee { animation: marqueeFlow 14s linear infinite; }
+}
+@keyframes marqueeFlow {
+  from { translate: 0 0; }
+  to   { translate: -16.667% 0; }
+}
+
+/* ---------- 계절: 따뜻한 빛 → 차가운 빛, 내리는 눈 ---------- */
+.grow-stage::before,
+.grow-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+/* 가을: 따뜻한 노을빛이 은은하게 */
+.grow-stage::before {
+  background: radial-gradient(ellipse 80% 70% at 50% 60%, rgba(240, 168, 96, 0.28), rgba(240, 168, 96, 0) 75%);
+  opacity: calc(var(--autumn, 0) * (1 - var(--snow, 0)));
+}
+/* 겨울: 차갑고 하얀 베일 */
+.grow-stage::after {
+  background: linear-gradient(rgba(232, 240, 248, 0.55), rgba(240, 245, 250, 0.7));
+  opacity: var(--snow, 0);
+}
+
+.snowfall {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--snow, 0);
+}
+.snowfall i {
+  position: absolute;
+  top: -4%;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.9);
+  animation: snowFall var(--dur) linear var(--delay) infinite;
+}
+@keyframes snowFall {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(calc(var(--dx) * 0.6), 55vh, 0); }
+  100% { transform: translate3d(var(--dx), 112vh, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .snowfall { display: none; }
+}
